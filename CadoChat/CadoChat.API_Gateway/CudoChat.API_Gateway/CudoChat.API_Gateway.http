@@ -1,4 +1,4 @@
-@CudoChat.API_Gateway_HostAddress = http://localhost:5035
+@CudoChat.API_Gateway_HostAddress = https://localhost:7009
 
 GET {{CudoChat.API_Gateway_HostAddress}}/weatherforecast/
 Accept: application/json
