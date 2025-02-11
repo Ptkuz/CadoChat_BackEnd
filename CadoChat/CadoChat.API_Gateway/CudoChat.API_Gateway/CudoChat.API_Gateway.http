@@ -1,0 +1,6 @@
+@CudoChat.API_Gateway_HostAddress = http://localhost:5035
+
+GET {{CudoChat.API_Gateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

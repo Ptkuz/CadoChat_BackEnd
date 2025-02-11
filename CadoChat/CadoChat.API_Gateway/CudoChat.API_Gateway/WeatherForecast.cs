@@ -1,4 +1,4 @@
-namespace CadoChat.API_Gateway
+namespace CudoChat.API_Gateway
 {
     public class WeatherForecast
     {
