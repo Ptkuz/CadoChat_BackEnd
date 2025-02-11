@@ -1,0 +1,54 @@
+# Общие настройки для C# и .NET
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+*.log
+*.cache
+*.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.sln.docstates
+*.csproj.user
+
+# Конфигурационные файлы
+appsettings*.json
+secrets.json
+.env
+
+# Кэш и временные файлы
+**/node_modules/
+**/dist/
+**/coverage/
+**/.turbo/
+**/.tmp/
+
+# Docker
+**/docker-compose.override.yml
+**/.dockerignore
+**/docker/
+
+# Kubernetes
+**/k8s/
+**/manifests/
+
+# Логирование и мониторинг
+logs/
+*.log
+*.nlog
+*.serilog
+
+# Тестирование
+TestResults/
+coverage/
+
+# Rider и JetBrains
+.idea/
+*.sln.iml
+
+# Git
+!.gitignore
+!.gitattributes
