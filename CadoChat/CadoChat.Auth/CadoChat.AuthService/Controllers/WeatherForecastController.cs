@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace CudoChat.API_Gateway.Controllers
+namespace CadoChat.AuthService.Controllers
 {
     [ApiController]
     [Route("[controller]")]

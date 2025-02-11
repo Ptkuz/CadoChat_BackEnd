@@ -1,0 +1,6 @@
+@CadoChat.AuthService_HostAddress = http://localhost:5086
+
+GET {{CadoChat.AuthService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
