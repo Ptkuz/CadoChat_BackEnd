@@ -1,8 +1,19 @@
+using CadoChat.AuthService.ApplicationConfigs;
+using CadoChat.AuthService.ApplicationConfigs.Interfaces;
 using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+var apiGateway = builder.Configuration["ServiceUrls:API_Gateway"]!;
+var authService = builder.Configuration["ServiceUrls:API_Gateway"]!;
+
+builder.Services.AddSingleton<IAppConfig>(new
+    AppConfig(apiGateway, authService));
+
 builder.Services.AddControllers();
+builder.Services.AddSwaggerGen();
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -11,7 +22,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
                       policy =>
                       {
-                          policy.WithOrigins("https://localhost:5000") // Только через API Gateway
+                          policy.WithOrigins(apiGateway) // Только через API Gateway
                                 .AllowAnyHeader()
                                 .AllowAnyMethod();
                       });
@@ -32,12 +43,13 @@ app.UseForwardedHeaders(forwardedHeadersOptions);
 
 app.Use(async (context, next) =>
 {
-    var forwardedHost = context.Request.Headers["X-Forwarded-Host"].ToString();
+    // Проверка заголовка X-Forwarded-For, добавленного API Gateway
+    var forwardedFor = context.Request.Headers["X-Forwarded-For"].ToString();
 
-    // Проверка на запросы, которые приходят не через API Gateway
-    if (string.IsNullOrEmpty(forwardedHost) || !forwardedHost.Contains("localhost:5000"))
+    if (string.IsNullOrEmpty(forwardedFor))
     {
-        context.Response.StatusCode = 403;
+        // Ответ, если запрос не прошел через API Gateway
+        context.Response.StatusCode = 403; // Forbidden
         await context.Response.WriteAsync("Forbidden: Access only through API Gateway.");
         return;
     }
@@ -49,8 +61,8 @@ app.UseCors(MyAllowSpecificOrigins);
 
 if (app.Environment.IsDevelopment())
 {
-    //app.UseSwagger();
-    //app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseAuthentication();

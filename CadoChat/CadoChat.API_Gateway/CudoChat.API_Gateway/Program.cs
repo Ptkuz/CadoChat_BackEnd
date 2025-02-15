@@ -1,13 +1,21 @@
+using CudoChat.API_Gateway.ApplicationConfigs;
+using CudoChat.API_Gateway.ApplicationConfigs.Interfaces;
+using Microsoft.AspNetCore.HttpOverrides;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
-using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
-
-
 builder.Services.AddRouting();
 // Подключаем Ocelot
 builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+var apiGateway = builder.Configuration["ServiceUrls:API_Gateway"]!;
+var authService = builder.Configuration["ServiceUrls:API_Gateway"]!;
+
+builder.Services.AddSingleton<IAppConfig>(new 
+    AppConfig(apiGateway, authService));
+
 builder.Services.AddOcelot();
 
 // Включаем CORS, разрешаем запросы только через API Gateway
@@ -15,7 +23,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowGateway", policy =>
     {
-        policy.WithOrigins("https://localhost:5000")
+        policy.WithOrigins(apiGateway)
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
@@ -41,7 +49,7 @@ app.Use(async (context, next) =>
 {
     var requestHost = context.Request.Host.Value;
 
-    if (string.IsNullOrEmpty(requestHost) || !requestHost.Contains("localhost:5000"))
+    if (string.IsNullOrEmpty(requestHost) || !apiGateway.Contains(requestHost))
     {
         context.Response.StatusCode = 403;
         await context.Response.WriteAsync("Forbidden: Access only through API Gateway.");
