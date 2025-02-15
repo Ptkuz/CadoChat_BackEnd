@@ -9,11 +9,14 @@
           "Port": 7220
         }
       ],
-      "UpstreamPathTemplate": "/auth/{everything}",
-      "UpstreamHttpMethod": [ "POST", "GET" ]
+      "UpstreamPathTemplate": "/api/auth/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "HttpHandlerOptions": {
+        "UseProxy": true
+      }
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "https://localhost:7009"
+    "BaseUrl": "https://localhost:5000"
   }
 }

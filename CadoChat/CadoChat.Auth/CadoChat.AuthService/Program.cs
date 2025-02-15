@@ -1,76 +1,61 @@
-using CadoChat.AuthService;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.Text;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Auth Service API", Version = "v1" });
-});
+
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        policy =>
-        {
-            policy.AllowAnyOrigin()   // Разрешаем любые источники (для dev)
-                  .AllowAnyMethod()   // Разрешаем любые HTTP-методы
-                  .AllowAnyHeader();  // Разрешаем любые заголовки
-        });
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("https://localhost:5000") // Только через API Gateway
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+                      });
 });
-
-// Подключаем БД
-builder.Services.AddDbContext<AuthDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-
-// Настраиваем Identity
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<AuthDbContext>()
-    .AddDefaultTokenProviders();
-
-// Настраиваем JWT-аутентификацию
-builder.Services.AddAuthentication("Bearer")
-    .AddJwtBearer(options =>
-    {
-        options.RequireHttpsMetadata = false;
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-        };
-    });
 
 var app = builder.Build();
 
-app.UseCors("AllowAll");
+var forwardedHeadersOptions = new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedHost,
+    RequireHeaderSymmetry = false,
+    ForwardLimit = null
+};
+forwardedHeadersOptions.KnownNetworks.Clear();
+forwardedHeadersOptions.KnownProxies.Clear();
 
-// Configure the HTTP request pipeline.
+app.UseForwardedHeaders(forwardedHeadersOptions);
+
+app.Use(async (context, next) =>
+{
+    var forwardedHost = context.Request.Headers["X-Forwarded-Host"].ToString();
+
+    // Проверка на запросы, которые приходят не через API Gateway
+    if (string.IsNullOrEmpty(forwardedHost) || !forwardedHost.Contains("localhost:5000"))
+    {
+        context.Response.StatusCode = 403;
+        await context.Response.WriteAsync("Forbidden: Access only through API Gateway.");
+        return;
+    }
+
+    await next();
+});
+
+app.UseCors(MyAllowSpecificOrigins);
+
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    //app.UseSwagger();
+    //app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRouting();
 app.MapControllers();
 
 app.Run();

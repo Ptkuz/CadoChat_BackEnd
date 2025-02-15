@@ -1,44 +1,61 @@
-using Microsoft.OpenApi.Models;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// Подключаем Ocelot
 builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
 builder.Services.AddOcelot();
-builder.Services.AddOpenApi();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
+
+// Включаем CORS, разрешаем запросы только через API Gateway
+builder.Services.AddCors(options =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "API Gateway", Version = "v1" });
-
-    // Добавляем ссылки на микросервисы
-    //c.AddServer(new OpenApiServer { Url = "https://localhost:7220", Description = "Auth Service" });
-
-    // Загружаем OpenAPI-документы микросервисов
-    //c.IncludeXmlComments("https://localhost:7220/swagger/v1/swagger.json");
+    options.AddPolicy("AllowGateway", policy =>
+    {
+        policy.WithOrigins("https://localhost:5000")
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
 });
-
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+var forwardedHeadersOptions = new ForwardedHeadersOptions
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("https://localhost:7220/swagger/v1/swagger.json", "Auth Service API");
-    });
-}
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedHost,
+    RequireHeaderSymmetry = false,
+    ForwardLimit = null
+};
+forwardedHeadersOptions.KnownNetworks.Clear();
+forwardedHeadersOptions.KnownProxies.Clear();
 
-await app.UseOcelot();
+app.UseForwardedHeaders(forwardedHeadersOptions);
+
+app.Use(async (context, next) =>
+{
+    var forwardedHost = context.Request.Headers["X-Forwarded-Host"].ToString();
+
+    if (string.IsNullOrEmpty(forwardedHost) || !forwardedHost.Contains("localhost:5000"))
+    {
+        context.Response.StatusCode = 403;
+        await context.Response.WriteAsync("Forbidden: Access only through API Gateway.");
+        return;
+    }
+
+    await next();
+});
+
+// Подключаем CORS
+app.UseCors("AllowGateway");
+
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
+app.UseRouting();
 
-app.MapControllers();
+// Подключаем Ocelot
+await app.UseOcelot();
 
 app.Run();
