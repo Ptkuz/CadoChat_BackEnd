@@ -11,6 +11,11 @@
       ],
       "UpstreamPathTemplate": "/api/auth/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "UseServiceDiscovery": false,
+      "AddHeadersToRequest": [
+        "X-Forwarded-For",
+        "X-Forwarded-Host"
+      ],
       "HttpHandlerOptions": {
         "UseProxy": true
       }

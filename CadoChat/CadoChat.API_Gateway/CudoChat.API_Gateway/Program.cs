@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+builder.Services.AddRouting();
 // Подключаем Ocelot
 builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
 builder.Services.AddOcelot();
@@ -19,6 +21,8 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddHeaderRouting();
+
 var app = builder.Build();
 
 var forwardedHeadersOptions = new ForwardedHeadersOptions
@@ -32,11 +36,12 @@ forwardedHeadersOptions.KnownProxies.Clear();
 
 app.UseForwardedHeaders(forwardedHeadersOptions);
 
+
 app.Use(async (context, next) =>
 {
-    var forwardedHost = context.Request.Headers["X-Forwarded-Host"].ToString();
+    var requestHost = context.Request.Host.Value;
 
-    if (string.IsNullOrEmpty(forwardedHost) || !forwardedHost.Contains("localhost:5000"))
+    if (string.IsNullOrEmpty(requestHost) || !requestHost.Contains("localhost:5000"))
     {
         context.Response.StatusCode = 403;
         await context.Response.WriteAsync("Forbidden: Access only through API Gateway.");
