@@ -11,10 +11,11 @@ builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
 var apiGateway = builder.Configuration["ServiceUrls:API_Gateway"]!;
-var authService = builder.Configuration["ServiceUrls:API_Gateway"]!;
+var authService = builder.Configuration["ServiceUrls:AuthService"]!;
 
 builder.Services.AddSingleton<IAppConfig>(new 
     AppConfig(apiGateway, authService));
+
 
 builder.Services.AddOcelot();
 
@@ -55,6 +56,10 @@ app.Use(async (context, next) =>
         await context.Response.WriteAsync("Forbidden: Access only through API Gateway.");
         return;
     }
+    var xForwardedFor = context.Connection?.RemoteIpAddress?.ToString();
+    var xForwardedHost = context.Request.Host.Value?.ToString();
+    context.Request.Headers.Append("X-Forwarded-For", xForwardedFor);
+    context.Request.Headers.Append("X-Forwarded-Host", xForwardedHost);
 
     await next();
 });

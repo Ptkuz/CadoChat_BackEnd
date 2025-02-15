@@ -16,6 +16,10 @@
         "X-Forwarded-For": "{RemoteIpAddress}",
         "X-Forwarded-Host": "{UpstreamHost}"
       },
+      "AddHeadersToResponse": {
+        "X-Forwarded-For": "{RemoteIpAddress}",
+        "X-Forwarded-Host": "{UpstreamHost}"
+      },
       "HttpHandlerOptions": {
         "UseProxy": true
       }

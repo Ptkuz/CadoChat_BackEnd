@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
 var apiGateway = builder.Configuration["ServiceUrls:API_Gateway"]!;
-var authService = builder.Configuration["ServiceUrls:API_Gateway"]!;
+var authService = builder.Configuration["ServiceUrls:AuthService"]!;
 
 builder.Services.AddSingleton<IAppConfig>(new
     AppConfig(apiGateway, authService));
@@ -44,9 +44,9 @@ app.UseForwardedHeaders(forwardedHeadersOptions);
 app.Use(async (context, next) =>
 {
     // Проверка заголовка X-Forwarded-For, добавленного API Gateway
-    var forwardedFor = context.Request.Headers["X-Forwarded-For"].ToString();
+    var host = context.Request.Headers["Host"].ToString();
 
-    if (string.IsNullOrEmpty(forwardedFor))
+    if (string.IsNullOrEmpty(host) || authService.Contains(host))
     {
         // Ответ, если запрос не прошел через API Gateway
         context.Response.StatusCode = 403; // Forbidden
