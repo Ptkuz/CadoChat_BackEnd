@@ -1,6 +1,7 @@
 using CadoChat.AuthService;
 using CadoChat.AuthService.Services;
 using CadoChat.AuthService.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -25,16 +26,14 @@ services.AddIdentity<IdentityUser, IdentityRole>()
 
 // Добавляем IdentityServer
 builder.Services.AddIdentityServer()
-    .AddResourceOwnerValidator<ResourceOwnerPasswordValidator>() // ✅ Добавляем кастомный логин
-    .AddProfileService<ProfileService>() // ✅ Подключаем профайл-сервис
     .AddInMemoryClients(IdentityServerConfig.Clients)
     .AddInMemoryApiScopes(IdentityServerConfig.ApiScopes)
     .AddInMemoryIdentityResources(IdentityServerConfig.IdentityResources)
     .AddDeveloperSigningCredential(); // 🚀 Используем дев-сертификат
 
 // Настройка аутентификации с использованием IdentityServer
-services.AddAuthentication("Bearer")
-    .AddJwtBearer("Bearer", options =>
+services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
     {
         options.Authority = builder.Configuration["ServiceUrls:AuthService"];
         options.RequireHttpsMetadata = false;

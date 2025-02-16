@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,10 +9,10 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 var apiGateway = builder.Configuration["ServiceUrls:API_Gateway"]!;
 var authService = builder.Configuration["ServiceUrls:AuthService"]!;
 
-builder.Services.AddAuthentication("Bearer")
-    .AddJwtBearer("Bearer", options =>
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
     {
-        options.Authority = builder.Configuration["ServiceUrls:AuthService"];
+        options.Authority = authService;
         options.RequireHttpsMetadata = false;
         options.Audience = "chat_api";
     });

@@ -4,6 +4,6 @@ namespace CadoChat.AuthService.Services.Interfaces
 {
     public interface ITokenGenService
     {
-        Task<string> GenerateTokenAsync();
+        Task<string> CreateAccessTokenAsync(IdentityUser user);
     }
 }

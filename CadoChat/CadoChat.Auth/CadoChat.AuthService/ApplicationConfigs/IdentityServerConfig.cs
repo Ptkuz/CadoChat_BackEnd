@@ -1,4 +1,4 @@
-﻿using IdentityServer8.Models;
+﻿using Duende.IdentityServer.Models;
 
 public static class IdentityServerConfig
 {
@@ -10,7 +10,7 @@ public static class IdentityServerConfig
                 ClientId = "chat_client",
                 ClientSecrets = { new Secret("super_secret_key".Sha256()) },
                 AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
-                AllowedScopes = { "openid", "profile", "chat_api" },
+                AllowedScopes = { "chat_api" },
                 AccessTokenLifetime = 3600
             }
         };
