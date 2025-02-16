@@ -25,21 +25,22 @@ builder.Services.AddAuthentication("Bearer")
 
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuerSigningKey = true, // Проверка подписи токена
+
             ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidIssuer = authService,
+            ValidIssuer = "https://localhost:7220",
+            //ValidateAudience = true,
             ValidAudience = "chat_api",
-            //IssuerSigningKeyResolver = (token, securityToken, identifier, parameters) =>
-            //{
-            //    // Здесь вы можете добавить свой код для получения публичных ключей
-            //    // Например, запросить их у IdentityServer через jwks endpoint:
-            //    var jwksUri = $"{options.Authority}/.well-known/jwks.json";
-            //    var client = new HttpClient();
-            //    var response = client.GetStringAsync(jwksUri).Result;
-            //    var keys = JsonConvert.DeserializeObject<JsonWebKeySet>(response);
-            //    return keys.Keys;
-            //}
+            ValidateLifetime = true,
+            IssuerSigningKeyResolver = (token, securityToken, identifier, parameters) =>
+            {
+                // Здесь вы можете добавить свой код для получения публичных ключей
+                // Например, запросить их у IdentityServer через jwks endpoint:
+                var jwksUri = $"{options.Authority}/.well-known/openid-configuration/jwks";
+                var client = new HttpClient();
+                var response = client.GetStringAsync(jwksUri).Result;
+                var keys = JsonConvert.DeserializeObject<JsonWebKeySet>(response);
+                return keys.Keys;
+            }
         };
 
         options.Events = new JwtBearerEvents

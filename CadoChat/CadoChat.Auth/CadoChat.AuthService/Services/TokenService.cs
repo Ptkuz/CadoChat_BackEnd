@@ -23,27 +23,28 @@ namespace CadoChat.AuthService.Services
 
         public async Task<string> CreateAccessTokenAsync(IdentityUser user)
         {
-            var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, user.Id),
-            new Claim(ClaimTypes.Name, user.UserName)
-        };
+            var rsa = RSA.Create();
+            //rsa.ImportRSAPrivateKey(Convert.FromBase64String("YOUR_PRIVATE_KEY"), out _);
 
-            var rsa = RSA.Create(2048);
             var key = new RsaSecurityKey(rsa)
             {
-                KeyId = _configuration["Jwt:SecretKey"] // Присваиваем kid (обязательно!)
+                KeyId = "supersecretkey1234564564564756757665756"
             };
-            var creds = new SigningCredentials(key, SecurityAlgorithms.RsaSha256);
-            var token = new JwtSecurityToken(
-                _configuration["Jwt:Issuer"],
-                _configuration["Jwt:Audience"],
-                claims,
-                expires: DateTime.UtcNow.AddMinutes(600),
-                signingCredentials: creds
-            );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Issuer = "https://localhost:7220",
+                Audience = "chat_api",
+                Subject = new ClaimsIdentity(new[] { new Claim("scope", "chat_api") }),
+                Expires = DateTime.UtcNow.AddMinutes(600),
+                SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.RsaSha256)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var jwt = tokenHandler.WriteToken(token);
+
+            return jwt;
         }
     }
 }
