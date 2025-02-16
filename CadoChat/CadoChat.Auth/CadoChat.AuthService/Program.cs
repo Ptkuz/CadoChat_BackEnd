@@ -1,6 +1,9 @@
-using CadoChat.AuthService.ApplicationConfigs;
-using CadoChat.AuthService.ApplicationConfigs.Interfaces;
+using CadoChat.AuthService;
+using CadoChat.AuthService.Services;
+using CadoChat.AuthService.Services.Interfaces;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,11 +12,38 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 var apiGateway = builder.Configuration["ServiceUrls:API_Gateway"]!;
 var authService = builder.Configuration["ServiceUrls:AuthService"]!;
 
-builder.Services.AddSingleton<IAppConfig>(new
-    AppConfig(apiGateway, authService));
+var services = builder.Services;
 
-builder.Services.AddControllers();
-builder.Services.AddSwaggerGen();
+// Настройка базы данных
+services.AddDbContext<AuthDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Настройка Identity
+services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<AuthDbContext>()
+    .AddDefaultTokenProviders();
+
+// Добавляем IdentityServer
+builder.Services.AddIdentityServer()
+    .AddResourceOwnerValidator<ResourceOwnerPasswordValidator>() // ✅ Добавляем кастомный логин
+    .AddProfileService<ProfileService>() // ✅ Подключаем профайл-сервис
+    .AddInMemoryClients(IdentityServerConfig.Clients)
+    .AddInMemoryApiScopes(IdentityServerConfig.ApiScopes)
+    .AddInMemoryIdentityResources(IdentityServerConfig.IdentityResources)
+    .AddDeveloperSigningCredential(); // 🚀 Используем дев-сертификат
+
+// Настройка аутентификации с использованием IdentityServer
+services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
+    {
+        options.Authority = builder.Configuration["ServiceUrls:AuthService"];
+        options.RequireHttpsMetadata = false;
+        options.Audience = "chat_api";
+    });
+
+services.AddAuthorization();
+services.AddControllers();
+services.AddScoped<ITokenGenService, TokenService>();
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -59,15 +89,10 @@ app.Use(async (context, next) =>
 
 app.UseCors(MyAllowSpecificOrigins);
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
+app.UseRouting();
+app.UseIdentityServer();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseRouting();
 app.MapControllers();
 
 app.Run();

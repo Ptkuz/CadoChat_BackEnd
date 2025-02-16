@@ -1,0 +1,22 @@
+[
+  {
+    "Name": "Новый профиль",
+    "Projects": [
+      {
+        "Path": "CadoChat.API_Gateway\\CudoChat.API_Gateway\\CudoChat.API_Gateway.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "CadoChat.Auth\\CadoChat.AuthService\\CadoChat.AuthService.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "CadoChat.Chat\\CadoChat.ChatService\\CadoChat.ChatService.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      }
+    ]
+  }
+]

@@ -18,7 +18,7 @@ namespace CadoChat.AuthService
                 new IdentityRole { Id = "945e5c4f-9d07-4594-abe6-a7529057e3f0", Name = "User", NormalizedName = "USER" }
             );
 
-            
+
         }
     }
 }

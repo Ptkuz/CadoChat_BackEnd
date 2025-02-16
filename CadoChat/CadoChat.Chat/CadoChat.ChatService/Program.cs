@@ -1,13 +1,8 @@
-using CudoChat.API_Gateway.ApplicationConfigs;
-using CudoChat.API_Gateway.ApplicationConfigs.Interfaces;
 using Microsoft.AspNetCore.HttpOverrides;
-using Ocelot.DependencyInjection;
-using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRouting();
 // Подключаем Ocelot
-builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
 var apiGateway = builder.Configuration["ServiceUrls:API_Gateway"]!;
@@ -22,8 +17,8 @@ builder.Services.AddAuthentication("Bearer")
     });
 
 
-builder.Services.AddOcelot();
 builder.Services.AddAuthorization();
+builder.Services.AddControllers();
 
 // Включаем CORS, разрешаем запросы только через API Gateway
 builder.Services.AddCors(options =>
@@ -35,8 +30,6 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader();
     });
 });
-
-builder.Services.AddHeaderRouting();
 
 var app = builder.Build();
 
@@ -78,8 +71,6 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
-// Подключаем Ocelot
-await app.UseOcelot();
+app.MapControllers();
 
 app.Run();
