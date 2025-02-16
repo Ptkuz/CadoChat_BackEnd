@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CadoChat.ChatService.Controllers
 {
     [ApiController]
-    [Route("api/messages")]
+    [Route("api/chat")]
     [Authorize] // Требует авторизацию с JWT
     public class ChatController : ControllerBase
     {

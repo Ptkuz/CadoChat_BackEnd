@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace CadoChat.AuthService.Services
@@ -28,13 +29,17 @@ namespace CadoChat.AuthService.Services
             new Claim(ClaimTypes.Name, user.UserName)
         };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var rsa = RSA.Create(2048);
+            var key = new RsaSecurityKey(rsa)
+            {
+                KeyId = _configuration["Jwt:SecretKey"] // Присваиваем kid (обязательно!)
+            };
+            var creds = new SigningCredentials(key, SecurityAlgorithms.RsaSha256);
             var token = new JwtSecurityToken(
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
                 claims,
-                expires: DateTime.UtcNow.AddMinutes(60),
+                expires: DateTime.UtcNow.AddMinutes(600),
                 signingCredentials: creds
             );
 

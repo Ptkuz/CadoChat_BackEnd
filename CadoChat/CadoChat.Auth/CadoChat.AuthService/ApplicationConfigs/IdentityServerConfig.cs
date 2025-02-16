@@ -2,16 +2,17 @@
 
 public static class IdentityServerConfig
 {
+
     public static IEnumerable<Client> Clients =>
         new List<Client>
         {
             new Client
             {
                 ClientId = "chat_client",
-                ClientSecrets = { new Secret("super_secret_key".Sha256()) },
-                AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                RequireClientSecret = false, // Убираем секрет, используем RSA
+                AllowedGrantTypes = GrantTypes.ClientCredentials,
                 AllowedScopes = { "chat_api" },
-                AccessTokenLifetime = 3600
+                AccessTokenLifetime = 600
             }
         };
 

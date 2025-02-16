@@ -1,6 +1,9 @@
 using CudoChat.API_Gateway.ApplicationConfigs;
 using CudoChat.API_Gateway.ApplicationConfigs.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
@@ -19,6 +22,45 @@ builder.Services.AddAuthentication("Bearer")
         options.Authority = builder.Configuration["ServiceUrls:AuthService"];
         options.RequireHttpsMetadata = false;
         options.Audience = "chat_api";
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true, // Проверка подписи токена
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidIssuer = authService,
+            ValidAudience = "chat_api",
+            //IssuerSigningKeyResolver = (token, securityToken, identifier, parameters) =>
+            //{
+            //    // Здесь вы можете добавить свой код для получения публичных ключей
+            //    // Например, запросить их у IdentityServer через jwks endpoint:
+            //    var jwksUri = $"{options.Authority}/.well-known/jwks.json";
+            //    var client = new HttpClient();
+            //    var response = client.GetStringAsync(jwksUri).Result;
+            //    var keys = JsonConvert.DeserializeObject<JsonWebKeySet>(response);
+            //    return keys.Keys;
+            //}
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                // Логируем ошибку
+                Console.WriteLine("Authentication failed: {Message}", context.Exception.Message);
+
+                // Возвращаем подробное сообщение о причине ошибки
+                context.Response.StatusCode = 401;
+                context.Response.ContentType = "application/json";
+                var errorDetails = new
+                {
+                    error = "Unauthorized",
+                    message = "Token is invalid or expired. Please authenticate again.",
+                    details = context.Exception.Message
+                };
+                return context.Response.WriteAsJsonAsync(errorDetails);
+            }
+        };
     });
 
 
