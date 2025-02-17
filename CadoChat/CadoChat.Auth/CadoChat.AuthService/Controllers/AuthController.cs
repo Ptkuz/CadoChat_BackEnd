@@ -1,6 +1,5 @@
-﻿using CadoChat.AuthService.Models;
-using CadoChat.AuthService.Services.Interfaces;
-using Duende.IdentityServer.Services;
+﻿using CadoChat.AuthManager.Services.Interfaces;
+using CadoChat.AuthService.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,13 +9,13 @@ public class AuthController : ControllerBase
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
-    private readonly ITokenGenService _tokenService;
+    private readonly ITokenManagerService _tokenManagerService;
 
-    public AuthController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ITokenGenService tokenService)
+    public AuthController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ITokenManagerService tokenManagerService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
-        _tokenService = tokenService;
+        _tokenManagerService = tokenManagerService;
     }
 
     [HttpPost("login")]
@@ -26,7 +25,7 @@ public class AuthController : ControllerBase
         if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
             return Unauthorized("Invalid credentials");
 
-        var token = await _tokenService.CreateAccessTokenAsync(user);
+        var token = _tokenManagerService.CreateAccessTokenAsync(user);
         return Ok(new { token });
     }
 
