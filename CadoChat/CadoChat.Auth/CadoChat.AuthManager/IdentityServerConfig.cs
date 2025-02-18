@@ -26,7 +26,7 @@ namespace CadoChat.AuthManager
         public static IEnumerable<ApiScope> ApiScopes =>
             new List<ApiScope>
             {
-            new ApiScope(AccessScopes.ChatApi.Key, AccessScopes.ChatApi.Value)
+            new ApiScope(AccessScopes.SendMessage.Key, AccessScopes.ReceiveMessage.Value)
             };
 
         public static IEnumerable<IdentityResource> IdentityResources =>

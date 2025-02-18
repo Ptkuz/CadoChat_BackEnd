@@ -48,10 +48,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
         options.Events = new JwtBearerEvents
         {
+
+            OnTokenValidated = context =>
+            {
+                return Task.CompletedTask;
+            },
+
             OnAuthenticationFailed = context =>
             {
-                // Логируем ошибку
-                Console.WriteLine("Authentication failed: {Message}", context.Exception.Message);
 
                 // Возвращаем подробное сообщение о причине ошибки
                 context.Response.StatusCode = 401;

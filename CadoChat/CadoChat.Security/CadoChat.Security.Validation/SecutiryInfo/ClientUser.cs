@@ -27,7 +27,7 @@ namespace CadoChat.Security.Validation.SecutiryInfo
         public ClientUser()
         {
             Id = "client_id";
-            Scopes = [AccessScopes.AdminApi.Key];
+            Scopes = [AccessScopes.SendMessage.Key];
             AccessTokenLifetime = SecurityConfigLoader.SecurityConfig.ClientUser.AccessTokenLifetime;
             AllowedGrantTypes = GrantTypes.ClientCredentials;
             RequireClientSecret = false;

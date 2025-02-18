@@ -21,8 +21,11 @@ namespace CadoChat.AuthManager.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Issuer = authService,
-                Audience = "chat_api",
-                Subject = new ClaimsIdentity(new[] { new Claim("scope", "chat_api") }),
+                Audience = string.Join(" ", clientUser.Audiences),
+                Subject = new ClaimsIdentity(new[]
+                { 
+                    new Claim("scope", AccessScopes.SendMessage.Key) 
+                }),
                 Expires = DateTime.UtcNow.AddMinutes(clientUser.AccessTokenLifetime),
                 SigningCredentials = RsaSecurityKeyService.GetSigningCredentials(key)
             };
