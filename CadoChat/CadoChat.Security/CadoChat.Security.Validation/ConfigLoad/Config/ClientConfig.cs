@@ -11,7 +11,7 @@ namespace CadoChat.Security.Validation.ConfigLoad.Config
         public ClientConfig(int accessTokenLifetime)
             : base(accessTokenLifetime)
         {
-            Audiences = [AudiencesAccess.AuthApi, AudiencesAccess.ChatApi];
+            Audiences = [AudiencesAccess.ChatApi];
         }
 
 

@@ -1,11 +1,10 @@
 using CadoChat.Security.Validation.ConfigLoad;
-using CadoChat.Security.Validation.ConfigLoad.Config;
 using CadoChat.Security.Validation.SecutiryInfo;
+using Duende.IdentityServer.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
-using System.Security.Cryptography;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRouting();
@@ -24,7 +23,34 @@ builder.Services.AddLogging(options =>
     options.AddDebug(); // Логирование в дебаг
 });
 
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "API Gateway", Version = "v1" });
+
+    // Добавляем поддержку авторизации через JWT (если используется)
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Введите токен в формате: Bearer {token}",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new List<string>()
+        }
+    });
+});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
@@ -55,7 +81,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 return Task.CompletedTask;
             },
 
-            OnAuthenticationFailed = context =>
+            OnAuthenticationFailed = async context =>
             {
 
                 // Возвращаем подробное сообщение о причине ошибки
@@ -67,7 +93,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     message = "Token is invalid or expired. Please authenticate again.",
                     details = context.Exception.Message
                 };
-                return context.Response.WriteAsJsonAsync(errorDetails);
+
+                
+
+                await context.Response.WriteAsJsonAsync(errorDetails);
+
             }
         };
     });
@@ -103,7 +133,22 @@ app.UseForwardedHeaders(forwardedHeadersOptions);
 
 app.Use(async (context, next) =>
 {
-    var requestHost = context.Request.Headers["origin"].ToString();
+    var apiOrigin = context.Request.Headers["Origin"].ToString();
+
+    if (!apiOrigin.IsNullOrEmpty() && apiGateway.Equals(apiOrigin))
+    {
+        string url = apiOrigin;
+        var uri = new Uri(url);
+        string hostAndPort = $"{uri.Host}:{uri.Port}";
+        context.Request.Host = new HostString(hostAndPort);
+    }
+
+    await next();
+});
+
+app.Use(async (context, next) =>
+{
+    var requestHost = context.Request.Host.Value;
 
     if (string.IsNullOrEmpty(requestHost) || !apiGateway.Contains(requestHost))
     {
