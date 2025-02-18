@@ -24,12 +24,13 @@ builder.Services.AddLogging(options =>
     options.AddDebug(); // Логирование в дебаг
 });
 
+builder.Services.AddSwaggerGen();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
     {
         options.Authority = authService;
         options.RequireHttpsMetadata = true;
-        options.Audience = "chat_api";
 
         var signingKey = RsaSecurityKeyService.GetKey();
 
@@ -42,7 +43,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateLifetime = true,
             IssuerSigningKey = signingKey, // Здесь используется ключ для подписи
             ValidIssuer = authService, // Указание правильного издателя
-            ValidAudience = "chat_api", // Указание правильной аудитории
+            ValidAudience = AudiencesAccess.ChatApi, // Указание правильной аудитории
             ValidateIssuerSigningKey = true // Включаем валидацию подписи
         };
 
@@ -80,7 +81,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowGateway", policy =>
     {
-        policy.WithOrigins()
+        policy.WithOrigins(apiGateway)
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
@@ -100,10 +101,9 @@ forwardedHeadersOptions.KnownProxies.Clear();
 
 app.UseForwardedHeaders(forwardedHeadersOptions);
 
-
 app.Use(async (context, next) =>
 {
-    var requestHost = context.Request.Host.Value;
+    var requestHost = context.Request.Headers["origin"].ToString();
 
     if (string.IsNullOrEmpty(requestHost) || !apiGateway.Contains(requestHost))
     {
@@ -119,15 +119,18 @@ app.Use(async (context, next) =>
     await next();
 });
 
+// Подключаем CORS
+app.UseCors("AllowGateway");
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
-// Подключаем CORS
-app.UseCors("AllowGateway");
-
-app.UseHttpsRedirection();
-
 
 app.Run();

@@ -34,10 +34,22 @@
         }
       ],
       "UpstreamPathTemplate": "/api/chat/{everything}",
-      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "UseServiceDiscovery": false,
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": [ "chat_api" ]
+      },
+      "AddHeadersToRequest": {
+        "X-Forwarded-For": "{RemoteIpAddress}",
+        "X-Forwarded-Host": "{UpstreamHost}"
+      },
+      "AddHeadersToResponse": {
+        "X-Forwarded-For": "{RemoteIpAddress}",
+        "X-Forwarded-Host": "{UpstreamHost}"
+      },
+      "HttpHandlerOptions": {
+        "UseProxy": true
       }
     }
   ],

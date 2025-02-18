@@ -1,7 +1,9 @@
 using CadoChat.Security.Validation.ConfigLoad;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
@@ -20,7 +22,7 @@ builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
         options.Authority = authService;
-        options.RequireHttpsMetadata = false;
+        options.RequireHttpsMetadata = true;
 
         options.TokenValidationParameters = new TokenValidationParameters
         {
@@ -28,7 +30,6 @@ builder.Services.AddAuthentication("Bearer")
             ValidateIssuer = true,
             ValidIssuer = authService,
             ValidateAudience = false,
-            //ValidAudience = "chat_api",
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             RequireSignedTokens = true
@@ -54,6 +55,35 @@ builder.Services.AddAuthentication("Bearer")
             }
         };
     });
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "API Gateway", Version = "v1" });
+
+    // Добавляем поддержку авторизации через JWT (если используется)
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Введите токен в формате: Bearer {token}",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new List<string>()
+        }
+    });
+});
 
 
 builder.Services.AddOcelot();
@@ -88,6 +118,8 @@ app.UseForwardedHeaders(forwardedHeadersOptions);
 
 app.Use(async (context, next) =>
 {
+    
+    
     var requestHost = context.Request.Host.Value;
 
     if (string.IsNullOrEmpty(requestHost) || !apiGateway.Contains(requestHost))
@@ -103,6 +135,18 @@ app.Use(async (context, next) =>
 
     await next();
 });
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Gateway V1");
+        c.SwaggerEndpoint("https://localhost:7220/swagger/v1/swagger.json", "AuthService");
+        c.SwaggerEndpoint("https://localhost:7167/swagger/v1/swagger.json", "ChatService");
+        c.RoutePrefix = "swagger"; // Swagger доступен по адресу /swagger
+    });
+}
 
 // Подключаем CORS
 app.UseCors("AllowGateway");

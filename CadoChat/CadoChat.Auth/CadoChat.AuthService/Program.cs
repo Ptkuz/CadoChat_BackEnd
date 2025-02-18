@@ -37,6 +37,8 @@ services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<AuthDbContext>()
     .AddDefaultTokenProviders();
 
+services.AddSwaggerGen();
+
 // Добавляем IdentityServer
 builder.Services.AddIdentityServer(options =>
 {
@@ -53,7 +55,7 @@ services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
     {
         options.Authority = authService;
-        options.RequireHttpsMetadata = false;
+        options.RequireHttpsMetadata = true;
 
         options.TokenValidationParameters = new TokenValidationParameters
         {
@@ -64,7 +66,6 @@ services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateLifetime = true,
             IssuerSigningKey = rsaKey, // Здесь используется ключ для подписи
             ValidIssuer = authService,
-            //ValidAudience = "chat_api", // Указание правильной аудитории
             ValidateIssuerSigningKey = true // Включаем валидацию подписи
         };
 
@@ -137,6 +138,12 @@ app.Use(async (context, next) =>
 });
 
 app.UseCors(MyAllowSpecificOrigins);
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseRouting();
 app.UseIdentityServer();
