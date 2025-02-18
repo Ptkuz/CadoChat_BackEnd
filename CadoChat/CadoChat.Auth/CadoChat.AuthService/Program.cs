@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +38,35 @@ services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<AuthDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "API Gateway", Version = "v1" });
+
+    // Добавляем поддержку авторизации через JWT (если используется)
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Введите токен в формате: Bearer {token}",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new List<string>()
+        }
+    });
+});
+
 // Добавляем IdentityServer
 builder.Services.AddIdentityServer(options =>
 {
@@ -53,7 +83,7 @@ services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
     {
         options.Authority = authService;
-        options.RequireHttpsMetadata = false;
+        options.RequireHttpsMetadata = true;
 
         options.TokenValidationParameters = new TokenValidationParameters
         {
@@ -64,7 +94,6 @@ services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateLifetime = true,
             IssuerSigningKey = rsaKey, // Здесь используется ключ для подписи
             ValidIssuer = authService,
-            //ValidAudience = "chat_api", // Указание правильной аудитории
             ValidateIssuerSigningKey = true // Включаем валидацию подписи
         };
 
@@ -137,6 +166,12 @@ app.Use(async (context, next) =>
 });
 
 app.UseCors(MyAllowSpecificOrigins);
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseRouting();
 app.UseIdentityServer();

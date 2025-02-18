@@ -1,11 +1,10 @@
 using CadoChat.Security.Validation.ConfigLoad;
-using CadoChat.Security.Validation.ConfigLoad.Config;
 using CadoChat.Security.Validation.SecutiryInfo;
+using Duende.IdentityServer.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
-using System.Security.Cryptography;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRouting();
@@ -24,12 +23,40 @@ builder.Services.AddLogging(options =>
     options.AddDebug(); // Логирование в дебаг
 });
 
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "API Gateway", Version = "v1" });
+
+    // Добавляем поддержку авторизации через JWT (если используется)
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Введите токен в формате: Bearer {token}",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new List<string>()
+        }
+    });
+});
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
     {
         options.Authority = authService;
         options.RequireHttpsMetadata = true;
-        options.Audience = "chat_api";
 
         var signingKey = RsaSecurityKeyService.GetKey();
 
@@ -42,7 +69,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateLifetime = true,
             IssuerSigningKey = signingKey, // Здесь используется ключ для подписи
             ValidIssuer = authService, // Указание правильного издателя
-            ValidAudience = "chat_api", // Указание правильной аудитории
+            ValidAudience = AudiencesAccess.ChatApi, // Указание правильной аудитории
             ValidateIssuerSigningKey = true // Включаем валидацию подписи
         };
 
@@ -54,7 +81,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 return Task.CompletedTask;
             },
 
-            OnAuthenticationFailed = context =>
+            OnAuthenticationFailed = async context =>
             {
 
                 // Возвращаем подробное сообщение о причине ошибки
@@ -66,7 +93,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     message = "Token is invalid or expired. Please authenticate again.",
                     details = context.Exception.Message
                 };
-                return context.Response.WriteAsJsonAsync(errorDetails);
+
+                
+
+                await context.Response.WriteAsJsonAsync(errorDetails);
+
             }
         };
     });
@@ -80,7 +111,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowGateway", policy =>
     {
-        policy.WithOrigins()
+        policy.WithOrigins(apiGateway)
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
@@ -100,6 +131,20 @@ forwardedHeadersOptions.KnownProxies.Clear();
 
 app.UseForwardedHeaders(forwardedHeadersOptions);
 
+app.Use(async (context, next) =>
+{
+    var apiOrigin = context.Request.Headers["Origin"].ToString();
+
+    if (!apiOrigin.IsNullOrEmpty() && apiGateway.Equals(apiOrigin))
+    {
+        string url = apiOrigin;
+        var uri = new Uri(url);
+        string hostAndPort = $"{uri.Host}:{uri.Port}";
+        context.Request.Host = new HostString(hostAndPort);
+    }
+
+    await next();
+});
 
 app.Use(async (context, next) =>
 {
@@ -119,15 +164,18 @@ app.Use(async (context, next) =>
     await next();
 });
 
+// Подключаем CORS
+app.UseCors("AllowGateway");
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
-// Подключаем CORS
-app.UseCors("AllowGateway");
-
-app.UseHttpsRedirection();
-
 
 app.Run();
