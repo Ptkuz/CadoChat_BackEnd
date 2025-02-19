@@ -1,3 +1,5 @@
+using CadoChat.Security.APIGateway.Extentions;
+using CadoChat.Security.Authentication.Middlewaers;
 using CadoChat.Security.Validation.ConfigLoad;
 using CadoChat.Security.Validation.SecutiryInfo;
 using Duende.IdentityServer.Extensions;
@@ -12,6 +14,9 @@ builder.Services.AddRouting();
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
 SecurityConfigLoader.Init(builder.Configuration);
+
+var configuration = builder.Configuration;
+builder.Services.AddSingleton<IConfiguration>(configuration);
 
 var apiGateway = builder.Configuration["ServiceUrls:API_Gateway"]!;
 var authService = SecurityConfigLoader.SecurityConfig.AuthService;
@@ -42,33 +47,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = authService, // Указание правильного издателя
             ValidAudience = AudiencesAccess.ChatApi, // Указание правильной аудитории
             ValidateIssuerSigningKey = true // Включаем валидацию подписи
-        };
-
-        options.Events = new JwtBearerEvents
-        {
-
-            OnTokenValidated = context =>
-            {
-                return Task.CompletedTask;
-            },
-
-            OnAuthenticationFailed = async context =>
-            {
-
-                // Возвращаем подробное сообщение о причине ошибки
-                context.Response.StatusCode = 401;
-                context.Response.ContentType = "application/json";
-                var errorDetails = new
-                {
-                    error = "Unauthorized",
-                    message = "Token is invalid or expired. Please authenticate again.",
-                    details = context.Exception.Message
-                };
-
-                var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-                logger.LogError(context.Exception, "Authentication failed");
-
-            }
         };
     });
 
@@ -117,54 +95,15 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
-var logger = app.Services.GetRequiredService<ILogger<Program>>();
 
-var forwardedHeadersOptions = new ForwardedHeadersOptions
-{
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedHost,
-    RequireHeaderSymmetry = false,
-    ForwardLimit = null
-};
-forwardedHeadersOptions.KnownNetworks.Clear();
-forwardedHeadersOptions.KnownProxies.Clear();
-
-app.UseForwardedHeaders(forwardedHeadersOptions);
+var applicationBuilder = (IApplicationBuilder)app.GetAPIGatewayOptions();
+var options = applicationBuilder.GetAPIGatewayOptions();
+app.UseForwardedHeaders(options);
 
 
-app.Use(async (context, next) =>
-{
-    var apiOrigin = context.Request.Headers["Origin"].ToString();
+app.UseMiddleware<ReplaceRequestHostMiddleware>();
+app.UseMiddleware<AccessAPIGatewayMiddleware>();
 
-    if (!apiOrigin.IsNullOrEmpty() && apiGateway.Equals(apiOrigin))
-    {
-        string url = apiOrigin;
-        var uri = new Uri(url);
-        string hostAndPort = $"{uri.Host}:{uri.Port}";
-        context.Request.Host = new HostString(hostAndPort);
-    }
-
-    await next();
-});
-
-app.Use(async (context, next) =>
-{
-    var requestHost = context.Request.Host.Value;
-
-    if (string.IsNullOrEmpty(requestHost) || !apiGateway.Contains(requestHost))
-    {
-        context.Response.StatusCode = 403;
-        await context.Response.WriteAsync("Forbidden: Access only through API Gateway.");
-        return;
-    }
-    var xForwardedFor = context.Connection?.RemoteIpAddress?.ToString();
-    var xForwardedHost = context.Request.Host.Value?.ToString();
-    context.Request.Headers.Append("X-Forwarded-For", xForwardedFor);
-    context.Request.Headers.Append("X-Forwarded-Host", xForwardedHost);
-
-    await next();
-});
-
-// Подключаем CORS
 app.UseCors("AllowGateway");
 
 if (app.Environment.IsDevelopment())
@@ -174,8 +113,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
+
+app.UseMiddleware<AuthenticationErrorMiddleware>();
+
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();
