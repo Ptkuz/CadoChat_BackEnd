@@ -19,7 +19,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\CadoChat.Security\CadoChat.Security.APIGateway\CadoChat.Security.APIGateway.csproj" />
     <ProjectReference Include="..\..\CadoChat.Security\CadoChat.Security.Authentication\CadoChat.Security.Authentication.csproj" />
+    <ProjectReference Include="..\..\CadoChat.Security\CadoChat.Security.Cors\CadoChat.Security.Cors.csproj" />
     <ProjectReference Include="..\..\CadoChat.Security\CadoChat.Security.Validation\CadoChat.Security.Validation.csproj" />
+    <ProjectReference Include="..\..\CadoChat.Web\CadoChat.Web.AspNetCore\CadoChat.Web.AspNetCore.csproj" />
   </ItemGroup>
 
 </Project>
