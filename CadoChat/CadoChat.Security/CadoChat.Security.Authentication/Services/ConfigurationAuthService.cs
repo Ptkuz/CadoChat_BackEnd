@@ -2,18 +2,29 @@
 using CadoChat.Security.Validation.ConfigLoad;
 using CadoChat.Security.Validation.SecutiryInfo;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CadoChat.Security.Authentication.Services
 {
-    public class ConfigurationAuthOptions : IConfigurationAuthOptions
+    public class ConfigurationAuthService : IConfigurationAuthService
     {
-        public void ConfigureAuthOptions(JwtBearerOptions options)
+        public string AuthenticationScheme => JwtBearerDefaults.AuthenticationScheme;
+
+        public void AddService(WebApplicationBuilder webApplicationBuilder)
+        {
+            webApplicationBuilder.Services.AddAuthentication(AuthenticationScheme)
+                .AddJwtBearer(AuthenticationScheme, ConfigureAuthOptions);
+        }
+
+        public void UseService(WebApplication applicationBuilder)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        private void ConfigureAuthOptions(JwtBearerOptions options)
         {
             var authService = SecurityConfigLoader.SecurityConfig.AuthService;
             options.Authority = authService;

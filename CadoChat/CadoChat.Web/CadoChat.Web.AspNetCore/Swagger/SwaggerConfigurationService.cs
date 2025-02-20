@@ -1,18 +1,30 @@
 ﻿using CadoChat.Web.AspNetCore.Swagger.Interfaces;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CadoChat.Web.AspNetCore.Swagger
 {
-    public class SwaggerSettings : ISwaggerSettings
+    public class SwaggerConfigurationService : ISwaggerConfigurationService
     {
-        public void ApplySettingsWithAuthorization(SwaggerGenOptions options)
+
+        public void AddService(WebApplicationBuilder webApplicationBuilder)
+        {
+            webApplicationBuilder.Services.AddSwaggerGen(ApplySettingsWithAuthorization);
+        }
+
+        public void UseService(WebApplication applicationBuilder)
+        {
+            if (applicationBuilder.Environment.IsDevelopment())
+            {
+                applicationBuilder.UseSwagger();
+                applicationBuilder.UseSwaggerUI();
+            }
+        }
+
+        private void ApplySettingsWithAuthorization(SwaggerGenOptions options)
         {
             options.SwaggerDoc("v1", new OpenApiInfo { Title = "API Gateway", Version = "v1" });
 

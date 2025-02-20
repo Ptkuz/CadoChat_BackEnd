@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CadoChat.Web.Common.Interfaces;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +9,8 @@ using System.Threading.Tasks;
 
 namespace CadoChat.Web.AspNetCore.Logging.Interfaces
 {
-    public interface IConfigurationLoggings
+    public interface ILoggingConfigurationService : IConfigurationService
     {
 
-        void ConfigureLogging(ILoggingBuilder loggingBuilder);
     }
 }

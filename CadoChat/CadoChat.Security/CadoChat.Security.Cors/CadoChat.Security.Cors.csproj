@@ -8,9 +8,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\CadoChat.Web\CadoChat.Web.Common\CadoChat.Web.Common.csproj" />
     <ProjectReference Include="..\CadoChat.Security.Common\CadoChat.Security.Common.csproj" />
   </ItemGroup>
 

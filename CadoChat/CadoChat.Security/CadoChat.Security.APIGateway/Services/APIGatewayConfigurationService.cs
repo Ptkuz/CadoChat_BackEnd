@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using CadoChat.Security.APIGateway.Services.Interfaces;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpOverrides;
 using System;
 using System.Collections.Generic;
@@ -6,12 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CadoChat.Security.APIGateway.Extentions
+namespace CadoChat.Security.APIGateway.Services
 {
-    public static class ApplicationBuilderExtentions
+    public class APIGatewayConfigurationService : IAPIGatewayConfigurationService
     {
 
-        public static ForwardedHeadersOptions GetAPIGatewayOptions(this IApplicationBuilder app)
+        public ForwardedHeadersOptions GetAPIGatewayOptions(WebApplication app)
         {
             var forwardedHeadersOptions = new ForwardedHeadersOptions
             {

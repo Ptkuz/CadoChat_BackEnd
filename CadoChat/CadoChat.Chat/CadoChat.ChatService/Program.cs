@@ -1,51 +1,42 @@
 using CadoChat.ChatService.Initialize;
-using CadoChat.Security.APIGateway.Extentions;
+using CadoChat.Security.APIGateway.Services.Interfaces;
 using CadoChat.Security.Authentication.Middlewaers;
 using CadoChat.Security.Authentication.Services.Interfaces;
 using CadoChat.Security.Cors.Services.Interfaces;
 using CadoChat.Web.AspNetCore.Logging.Interfaces;
 using CadoChat.Web.AspNetCore.Swagger.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 var InitializedBuilder = ApplicationBuilderInitializer.CreateInstance(builder);
 
-
-var loggingService = InitializedBuilder.GetService<IConfigurationLoggings>(typeof(IConfigurationLoggings));
-var configurationAuthOptions = InitializedBuilder.GetService<IConfigurationAuthOptions>(typeof(IConfigurationAuthOptions));
-var swaggerSettings = InitializedBuilder.GetService<ISwaggerSettings>(typeof(ISwaggerSettings));
-var corsSettings = InitializedBuilder.GetService<ICorsSettings>(typeof(ICorsSettings));
+var loggingService = InitializedBuilder.GetService<ILoggingConfigurationService>(typeof(ILoggingConfigurationService));
+var authService = InitializedBuilder.GetService<IConfigurationAuthService>(typeof(IConfigurationAuthService));
+var swaggerService = InitializedBuilder.GetService<ISwaggerConfigurationService>(typeof(ISwaggerConfigurationService));
+var corsService = InitializedBuilder.GetService<ICorsConfigurationService>(typeof(ICorsConfigurationService));
+var apiGatewayService = InitializedBuilder.GetService<IAPIGatewayConfigurationService>(typeof(IAPIGatewayConfigurationService));
 
 builder.Services.AddRouting();
-builder.Services.AddLogging(loggingService.ConfigureLogging);
+loggingService.AddService(builder);
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, configurationAuthOptions.ConfigureAuthOptions);
-
-builder.Services.AddSwaggerGen(swaggerSettings.ApplySettingsWithAuthorization);
+authService.AddService(builder);
+swaggerService.AddService(builder);
 
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 
-builder.Services.AddCors(corsSettings.SetCorsOptions);
+corsService.AddService(builder);
 
 var app = builder.Build();
 
-var applicationBuilder = (IApplicationBuilder)app;
-var options = applicationBuilder.GetAPIGatewayOptions();
+var options = apiGatewayService.GetAPIGatewayOptions(app);
 app.UseForwardedHeaders(options);
 
 
 app.UseMiddleware<ReplaceRequestHostMiddleware>();
 app.UseMiddleware<AccessAPIGatewayMiddleware>();
 
-corsSettings.UseCors(applicationBuilder);
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+corsService.UseService(app);
+swaggerService.UseService(app);
 
 app.UseRouting();
 
