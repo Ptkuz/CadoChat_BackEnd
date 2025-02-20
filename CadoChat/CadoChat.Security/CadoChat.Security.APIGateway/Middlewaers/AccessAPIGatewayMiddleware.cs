@@ -1,23 +1,16 @@
-﻿using CadoChat.Web.AspNetCore.WebResponsies;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CadoChat.Security.Authentication.Middlewaers
 {
     public class AccessAPIGatewayMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ILogger<AuthenticationErrorMiddleware> _logger;
+        private readonly ILogger<AccessAPIGatewayMiddleware> _logger;
         private readonly IConfiguration _configuration;
 
-        public AccessAPIGatewayMiddleware(RequestDelegate next, ILogger<AuthenticationErrorMiddleware> logger, IConfiguration configuration)
+        public AccessAPIGatewayMiddleware(RequestDelegate next, ILogger<AccessAPIGatewayMiddleware> logger, IConfiguration configuration)
         {
             _next = next;
             _logger = logger;

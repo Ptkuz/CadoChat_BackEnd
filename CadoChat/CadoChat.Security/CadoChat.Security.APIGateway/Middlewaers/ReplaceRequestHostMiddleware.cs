@@ -1,22 +1,16 @@
-﻿using Duende.IdentityServer.Extensions;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CadoChat.Security.Authentication.Middlewaers
 {
     public class ReplaceRequestHostMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ILogger<AuthenticationErrorMiddleware> _logger;
+        private readonly ILogger<ReplaceRequestHostMiddleware> _logger;
         private readonly IConfiguration _configuration;
 
-        public ReplaceRequestHostMiddleware(RequestDelegate next, ILogger<AuthenticationErrorMiddleware> logger, IConfiguration configuration)
+        public ReplaceRequestHostMiddleware(RequestDelegate next, ILogger<ReplaceRequestHostMiddleware> logger, IConfiguration configuration)
         {
             _next = next;
             _logger = logger;
@@ -28,7 +22,7 @@ namespace CadoChat.Security.Authentication.Middlewaers
             var apiOrigin = context.Request.Headers["Origin"].ToString();
             var apiGateway = _configuration["ServiceUrls:API_Gateway"]!;
 
-            if (!apiOrigin.IsNullOrEmpty() && apiGateway.Equals(apiOrigin))
+            if (!string.IsNullOrEmpty(apiOrigin) && apiGateway.Equals(apiOrigin))
             {
                 string url = apiOrigin;
                 var uri = new Uri(url);

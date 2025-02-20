@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CadoChat.API_Gateway", "Cad
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CudoChat.API_Gateway", "CadoChat.API_Gateway\CudoChat.API_Gateway\CudoChat.API_Gateway.csproj", "{D1DB828F-335D-4F73-A34C-4C306D9F6E92}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CadoChat,Auth", "CadoChat,Auth", "{68506DB0-E68A-4490-8A03-19CB210C3EEE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CadoChat.Auth", "CadoChat.Auth", "{68506DB0-E68A-4490-8A03-19CB210C3EEE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CadoChat.AuthService", "CadoChat.Auth\CadoChat.AuthService\CadoChat.AuthService.csproj", "{224785A4-CD01-4C11-8F8B-7E2F3E45AA3E}"
 EndProject
@@ -26,6 +26,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CadoChat.Web.AspNetCore", "CadoChat.Web\CadoChat.Web.AspNetCore\CadoChat.Web.AspNetCore.csproj", "{1B1E82AB-031E-4BFD-96D7-2783960F8710}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CadoChat.Security.APIGateway", "CadoChat.Security\CadoChat.Security.APIGateway\CadoChat.Security.APIGateway.csproj", "{216F702D-C8FF-4369-AA04-1B29C5237CCA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CadoChat.Web", "CadoChat.Web", "{D34AC1D2-6158-4F47-B0DB-60ADC8732723}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,6 +78,7 @@ Global
 		{4BFD42B1-202B-48F9-BCB7-D9CB15153856} = {68506DB0-E68A-4490-8A03-19CB210C3EEE}
 		{676692AB-804B-4F14-8D56-B1FF17E0C49F} = {ED21670B-4021-4ACF-A23E-4557B3420DA0}
 		{BA501016-82A0-4516-95D7-A8D4234897B9} = {ED21670B-4021-4ACF-A23E-4557B3420DA0}
+		{1B1E82AB-031E-4BFD-96D7-2783960F8710} = {D34AC1D2-6158-4F47-B0DB-60ADC8732723}
 		{216F702D-C8FF-4369-AA04-1B29C5237CCA} = {ED21670B-4021-4ACF-A23E-4557B3420DA0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

@@ -1,10 +1,17 @@
 using CadoChat.Security.APIGateway.Extentions;
 using CadoChat.Security.Authentication.Middlewaers;
+using CadoChat.Security.Authentication.Services;
+using CadoChat.Security.Authentication.Services.Interfaces;
 using CadoChat.Security.Validation.ConfigLoad;
 using CadoChat.Security.Validation.SecutiryInfo;
+using CadoChat.Web.AspNetCore.Logging;
+using CadoChat.Web.AspNetCore.Logging.Interfaces;
+using CadoChat.Web.AspNetCore.Swagger;
+using CadoChat.Web.AspNetCore.Swagger.Interfaces;
 using Duende.IdentityServer.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -19,66 +26,17 @@ var configuration = builder.Configuration;
 builder.Services.AddSingleton<IConfiguration>(configuration);
 
 var apiGateway = builder.Configuration["ServiceUrls:API_Gateway"]!;
-var authService = SecurityConfigLoader.SecurityConfig.AuthService;
 
-// В Startup.cs или Program.cs
-builder.Services.AddLogging(options =>
-{
-    options.AddConsole(); // Логирование в консоль
-    options.AddDebug(); // Логирование в дебаг
-});
+IConfigurationLoggings configurationLoggings = new ConfigurationLoggings();
+IConfigurationAuthOptions configurationAuthOptions = new ConfigurationAuthOptions();
+ISwaggerSettings swaggerSettings = new SwaggerSettings();
+
+builder.Services.AddLogging(configurationLoggings.ConfigureLogging);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-    {
-        options.Authority = authService;
-        options.RequireHttpsMetadata = true;
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, configurationAuthOptions.ConfigureAuthOptions);
 
-        var signingKey = RsaSecurityKeyService.GetKey();
-
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-
-            ClockSkew = TimeSpan.Zero,
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            IssuerSigningKey = signingKey, // Здесь используется ключ для подписи
-            ValidIssuer = authService, // Указание правильного издателя
-            ValidAudience = AudiencesAccess.ChatApi, // Указание правильной аудитории
-            ValidateIssuerSigningKey = true // Включаем валидацию подписи
-        };
-    });
-
-
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "API Gateway", Version = "v1" });
-
-    // Добавляем поддержку авторизации через JWT (если используется)
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Description = "Введите токен в формате: Bearer {token}",
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer"
-    });
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new List<string>()
-        }
-    });
-});
+builder.Services.AddSwaggerGen(swaggerSettings.ApplySettingsWithAuthorization);
 
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
@@ -96,7 +54,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-var applicationBuilder = (IApplicationBuilder)app.GetAPIGatewayOptions();
+var applicationBuilder = (IApplicationBuilder)app;
 var options = applicationBuilder.GetAPIGatewayOptions();
 app.UseForwardedHeaders(options);
 
