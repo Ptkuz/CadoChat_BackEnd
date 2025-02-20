@@ -2,6 +2,7 @@ using CadoChat.AuthManager;
 using CadoChat.AuthManager.Services;
 using CadoChat.AuthManager.Services.Interfaces;
 using CadoChat.AuthService;
+using CadoChat.AuthService.Initialize;
 using CadoChat.Security.Validation.ConfigLoad;
 using CadoChat.Security.Validation.SecutiryInfo;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -12,10 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-
-SecurityConfigLoader.Init(builder.Configuration);
+var InitializedBuilder = ApplicationBuilderInitializer.CreateInstance(builder);
 
 var apiGateway = builder.Configuration["ServiceUrls:API_Gateway"]!;
 var authService = SecurityConfigLoader.SecurityConfig.AuthService;
