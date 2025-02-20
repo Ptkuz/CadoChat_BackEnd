@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CadoChat.Security.Authentic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CadoChat.Web.AspNetCore", "CadoChat.Web\CadoChat.Web.AspNetCore\CadoChat.Web.AspNetCore.csproj", "{1B1E82AB-031E-4BFD-96D7-2783960F8710}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CadoChat.Security.APIGateway", "CadoChat.Security\CadoChat.Security.APIGateway\CadoChat.Security.APIGateway.csproj", "{216F702D-C8FF-4369-AA04-1B29C5237CCA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{1B1E82AB-031E-4BFD-96D7-2783960F8710}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B1E82AB-031E-4BFD-96D7-2783960F8710}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B1E82AB-031E-4BFD-96D7-2783960F8710}.Release|Any CPU.Build.0 = Release|Any CPU
+		{216F702D-C8FF-4369-AA04-1B29C5237CCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{216F702D-C8FF-4369-AA04-1B29C5237CCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{216F702D-C8FF-4369-AA04-1B29C5237CCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{216F702D-C8FF-4369-AA04-1B29C5237CCA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -70,6 +76,7 @@ Global
 		{4BFD42B1-202B-48F9-BCB7-D9CB15153856} = {68506DB0-E68A-4490-8A03-19CB210C3EEE}
 		{676692AB-804B-4F14-8D56-B1FF17E0C49F} = {ED21670B-4021-4ACF-A23E-4557B3420DA0}
 		{BA501016-82A0-4516-95D7-A8D4234897B9} = {ED21670B-4021-4ACF-A23E-4557B3420DA0}
+		{216F702D-C8FF-4369-AA04-1B29C5237CCA} = {ED21670B-4021-4ACF-A23E-4557B3420DA0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FCB0A17-A169-4FEB-8A30-57BCD1507F3A}
