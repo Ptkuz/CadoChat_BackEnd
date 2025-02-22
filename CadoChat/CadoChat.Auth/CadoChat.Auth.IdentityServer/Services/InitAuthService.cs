@@ -10,8 +10,6 @@ namespace CadoChat.Security.Authentication.Services
 {
     public class InitAuthService : ConfigurationAuthService, IConfigurationAuthService
     {
-        public string AuthenticationScheme => JwtBearerDefaults.AuthenticationScheme;
-
         public override void AddService(WebApplicationBuilder webApplicationBuilder)
         {
             webApplicationBuilder.Services.AddAuthentication(AuthenticationScheme)
