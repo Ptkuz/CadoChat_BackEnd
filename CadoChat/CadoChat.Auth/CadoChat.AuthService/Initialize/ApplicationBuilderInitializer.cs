@@ -1,4 +1,5 @@
-﻿using CadoChat.AuthService.Services;
+﻿using CadoChat.Auth.IdentityServer.Services;
+using CadoChat.AuthService.Services;
 using CadoChat.AuthService.Services.Interfaces;
 using CadoChat.Security.APIGateway.Services;
 using CadoChat.Security.APIGateway.Services.Interfaces;
@@ -37,7 +38,7 @@ namespace CadoChat.AuthService.Initialize
             var configuration = _applicationBuilder.Configuration;
 
             _loggingConfigurationService = new LoggingConfigurationService();
-            _configurationAuthOptions = new ConfigurationAuthService();
+            _configurationAuthOptions = new InitAuthService();
             _swaggerConfigurationService = new SwaggerConfigurationService();
             _corsConfigurationService = new CorsConfigurationService(configuration);
             _apiGatewayConfigurationService = new APIGatewayConfigurationService();
@@ -67,6 +68,8 @@ namespace CadoChat.AuthService.Initialize
                     return (TService)_corsConfigurationService;
                 case Type t when t == typeof(IAPIGatewayConfigurationService):
                     return (TService)_apiGatewayConfigurationService;
+                case Type t when t == typeof(IConfigurationIdentityService):
+                    return (TService)_configurationIdentityService;
                 default:
                     throw new InvalidCastException($"Cannot cast {type} to {typeof(TService)}");
             }

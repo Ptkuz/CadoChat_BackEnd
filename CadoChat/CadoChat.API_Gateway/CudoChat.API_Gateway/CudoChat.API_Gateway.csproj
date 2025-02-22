@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\CadoChat.Security\CadoChat.Security.APIGateway\CadoChat.Security.APIGateway.csproj" />
     <ProjectReference Include="..\..\CadoChat.Security\CadoChat.Security.Validation\CadoChat.Security.Validation.csproj" />
   </ItemGroup>
 

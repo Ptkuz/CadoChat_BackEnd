@@ -1,3 +1,4 @@
+using CadoChat.Security.Authentication.Middlewaers;
 using CadoChat.Security.Validation.ConfigLoad;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -116,25 +117,7 @@ forwardedHeadersOptions.KnownProxies.Clear();
 app.UseForwardedHeaders(forwardedHeadersOptions);
 
 
-app.Use(async (context, next) =>
-{
-    
-    
-    var requestHost = context.Request.Host.Value;
-
-    if (string.IsNullOrEmpty(requestHost) || !apiGateway.Contains(requestHost))
-    {
-        context.Response.StatusCode = 403;
-        await context.Response.WriteAsync("Forbidden: Access only through API Gateway.");
-        return;
-    }
-    var xForwardedFor = context.Connection?.RemoteIpAddress?.ToString();
-    var xForwardedHost = context.Request.Host.Value?.ToString();
-    context.Request.Headers.Append("X-Forwarded-For", xForwardedFor);
-    context.Request.Headers.Append("X-Forwarded-Host", xForwardedHost);
-
-    await next();
-});
+app.UseMiddleware<AccessAPIGatewayMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

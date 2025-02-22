@@ -11,6 +11,6 @@ namespace CadoChat.Security.Authentication.Services.Interfaces
 {
     public interface IConfigurationAuthService : IConfigurationService
     {
-
+        string AuthenticationScheme { get; }
     }
 }

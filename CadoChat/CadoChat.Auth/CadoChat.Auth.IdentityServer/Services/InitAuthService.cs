@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CadoChat.Security.Authentication.Services
 {
-    public class ConfigurationAuthService : IConfigurationAuthService
+    public class InitAuthService : IConfigurationAuthService
     {
         public string AuthenticationScheme => JwtBearerDefaults.AuthenticationScheme;
 
@@ -26,22 +26,23 @@ namespace CadoChat.Security.Authentication.Services
 
         private void ConfigureAuthOptions(JwtBearerOptions options)
         {
+
+            var rsaKey = RsaSecurityKeyService.GetKey();
+
             var authService = SecurityConfigLoader.SecurityConfig.AuthService;
             options.Authority = authService;
+            options.Authority = authService;
             options.RequireHttpsMetadata = true;
-
-            var signingKey = RsaSecurityKeyService.GetKey();
 
             options.TokenValidationParameters = new TokenValidationParameters
             {
 
                 ClockSkew = TimeSpan.Zero,
                 ValidateIssuer = true,
-                ValidateAudience = true,
+                ValidateAudience = false,
                 ValidateLifetime = true,
-                IssuerSigningKey = signingKey, // Здесь используется ключ для подписи
-                ValidIssuer = authService, // Указание правильного издателя
-                ValidAudience = AudiencesAccess.ChatApi, // Указание правильной аудитории
+                IssuerSigningKey = rsaKey, // Здесь используется ключ для подписи
+                ValidIssuer = authService,
                 ValidateIssuerSigningKey = true // Включаем валидацию подписи
             };
         }

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
-namespace CadoChat.AuthService.Services
+namespace CadoChat.Auth.IdentityServer.Services
 {
     public class ConfigurationIdentityService : IConfigurationIdentityService
     {
@@ -34,7 +34,7 @@ namespace CadoChat.AuthService.Services
 
         public void UseService(WebApplication applicationBuilder)
         {
-            throw new NotImplementedException();
+            applicationBuilder.UseIdentityServer();
         }
     }
 }
