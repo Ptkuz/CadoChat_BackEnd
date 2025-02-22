@@ -18,8 +18,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\CadoChat.Auth\CadoChat.Auth.IdentityServer\CadoChat.Auth.IdentityServer.csproj" />
     <ProjectReference Include="..\..\CadoChat.Security\CadoChat.Security.APIGateway\CadoChat.Security.APIGateway.csproj" />
+    <ProjectReference Include="..\..\CadoChat.Security\CadoChat.Security.Authentication\CadoChat.Security.Authentication.csproj" />
+    <ProjectReference Include="..\..\CadoChat.Security\CadoChat.Security.Cors\CadoChat.Security.Cors.csproj" />
     <ProjectReference Include="..\..\CadoChat.Security\CadoChat.Security.Validation\CadoChat.Security.Validation.csproj" />
+    <ProjectReference Include="..\..\CadoChat.Web\CadoChat.Web.AspNetCore\CadoChat.Web.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\CadoChat.Web\CadoChat.Web.Common\CadoChat.Web.Common.csproj" />
+    <ProjectReference Include="..\CadoChat.APIGateway.Manager\CadoChat.APIGateway.Manager.csproj" />
   </ItemGroup>
 
 </Project>

@@ -10,15 +10,16 @@ namespace CadoChat.Security.Authentication.Services
 {
     public class ConfigurationAuthService : IConfigurationAuthService
     {
-        public string AuthenticationScheme => JwtBearerDefaults.AuthenticationScheme;
+        public virtual string AuthenticationScheme => 
+            JwtBearerDefaults.AuthenticationScheme;
 
-        public void AddService(WebApplicationBuilder webApplicationBuilder)
+        public virtual void AddService(WebApplicationBuilder webApplicationBuilder)
         {
             webApplicationBuilder.Services.AddAuthentication(AuthenticationScheme)
                 .AddJwtBearer(AuthenticationScheme, ConfigureAuthOptions);
         }
 
-        public void UseService(WebApplication applicationBuilder)
+        public virtual void UseService(WebApplication applicationBuilder)
         {
             applicationBuilder.UseAuthentication();
         }
@@ -35,12 +36,11 @@ namespace CadoChat.Security.Authentication.Services
             options.TokenValidationParameters = new TokenValidationParameters
             {
 
-                ClockSkew = TimeSpan.Zero,
                 ValidateIssuer = true,
+                ValidIssuer = authService,
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 IssuerSigningKey = signingKey, // Здесь используется ключ для подписи
-                ValidIssuer = authService, // Указание правильного издателя
                 ValidAudience = AudiencesAccess.ChatApi, // Указание правильной аудитории
                 ValidateIssuerSigningKey = true // Включаем валидацию подписи
             };

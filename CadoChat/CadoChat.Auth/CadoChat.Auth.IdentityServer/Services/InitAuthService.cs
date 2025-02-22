@@ -8,21 +8,15 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CadoChat.Security.Authentication.Services
 {
-    public class InitAuthService : IConfigurationAuthService
+    public class InitAuthService : ConfigurationAuthService, IConfigurationAuthService
     {
         public string AuthenticationScheme => JwtBearerDefaults.AuthenticationScheme;
 
-        public void AddService(WebApplicationBuilder webApplicationBuilder)
+        public override void AddService(WebApplicationBuilder webApplicationBuilder)
         {
             webApplicationBuilder.Services.AddAuthentication(AuthenticationScheme)
                 .AddJwtBearer(AuthenticationScheme, ConfigureAuthOptions);
         }
-
-        public void UseService(WebApplication applicationBuilder)
-        {
-            applicationBuilder.UseAuthentication();
-        }
-
 
         private void ConfigureAuthOptions(JwtBearerOptions options)
         {

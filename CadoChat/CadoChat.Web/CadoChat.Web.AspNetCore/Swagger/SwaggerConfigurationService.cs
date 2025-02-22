@@ -10,12 +10,12 @@ namespace CadoChat.Web.AspNetCore.Swagger
     public class SwaggerConfigurationService : ISwaggerConfigurationService
     {
 
-        public void AddService(WebApplicationBuilder webApplicationBuilder)
+        public virtual void AddService(WebApplicationBuilder webApplicationBuilder)
         {
             webApplicationBuilder.Services.AddSwaggerGen(ApplySettingsWithAuthorization);
         }
 
-        public void UseService(WebApplication applicationBuilder)
+        public virtual void UseService(WebApplication applicationBuilder)
         {
             if (applicationBuilder.Environment.IsDevelopment())
             {
