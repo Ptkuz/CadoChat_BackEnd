@@ -5,19 +5,15 @@ using CadoChat.Security.Authentication.Middlewaers;
 using CadoChat.Security.Authentication.Services.Interfaces;
 using CadoChat.Security.Cors.Services.Interfaces;
 using CadoChat.Security.Validation.ConfigLoad;
+using CadoChat.Security.Validation.Services;
 using CadoChat.Web.AspNetCore.Logging.Interfaces;
 using CadoChat.Web.AspNetCore.Swagger.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var InitializedBuilder = ApplicationBuilderInitializer.CreateInstance(builder);
+var InitializedBuilder = ApplicationBuilderInitializer.CreateInstance(builder, RsaSecurityKeyService.GetInstance());
 
 var loggingService = InitializedBuilder.GetService<ILoggingConfigurationService>(typeof(ILoggingConfigurationService));
 var authApiGatewayService = InitializedBuilder.GetService<IConfigurationAuthService>(typeof(IConfigurationAuthService));

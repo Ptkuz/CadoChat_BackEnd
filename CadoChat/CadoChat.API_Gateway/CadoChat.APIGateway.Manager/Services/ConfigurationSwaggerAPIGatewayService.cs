@@ -21,9 +21,9 @@ namespace CadoChat.APIGateway.Manager.Services
                 applicationBuilder.UseSwaggerUI(c =>
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Gateway V1");
-                    c.SwaggerEndpoint("https://localhost:7220/swagger/v1/swagger.json", "AuthService");
-                    c.SwaggerEndpoint("https://localhost:7167/swagger/v1/swagger.json", "ChatService");
-                    c.RoutePrefix = "swagger"; // Swagger доступен по адресу /swagger
+                    c.SwaggerEndpoint("/auth/swagger/v1/swagger.json", "AuthService"); 
+                    c.SwaggerEndpoint("/chat/swagger/v1/swagger.json", "ChatService");
+                    c.RoutePrefix = "swagger";
                 });
             }
         }

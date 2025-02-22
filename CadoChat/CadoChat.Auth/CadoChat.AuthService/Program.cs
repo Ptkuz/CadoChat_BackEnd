@@ -1,5 +1,4 @@
 using CadoChat.Auth.IdentityServer.Middlewaers;
-using CadoChat.AuthManager;
 using CadoChat.AuthManager.Services;
 using CadoChat.AuthManager.Services.Interfaces;
 using CadoChat.AuthService;
@@ -8,19 +7,14 @@ using CadoChat.AuthService.Services.Interfaces;
 using CadoChat.Security.APIGateway.Services.Interfaces;
 using CadoChat.Security.Authentication.Services.Interfaces;
 using CadoChat.Security.Cors.Services.Interfaces;
-using CadoChat.Security.Validation.ConfigLoad;
-using CadoChat.Security.Validation.SecutiryInfo;
+using CadoChat.Security.Validation.Services;
 using CadoChat.Web.AspNetCore.Logging.Interfaces;
 using CadoChat.Web.AspNetCore.Swagger.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-var InitializedBuilder = ApplicationBuilderInitializer.CreateInstance(builder);
+var InitializedBuilder = ApplicationBuilderInitializer.CreateInstance(builder, RsaSecurityKeyService.GetInstance());
 
 var loggingService = InitializedBuilder.GetService<ILoggingConfigurationService>(typeof(ILoggingConfigurationService));
 var initAuthService = InitializedBuilder.GetService<IConfigurationAuthService>(typeof(IConfigurationAuthService));

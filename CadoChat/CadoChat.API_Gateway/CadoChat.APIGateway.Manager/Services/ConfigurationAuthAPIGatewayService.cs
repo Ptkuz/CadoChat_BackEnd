@@ -1,6 +1,7 @@
 ﻿using CadoChat.Security.Authentication.Services;
 using CadoChat.Security.Authentication.Services.Interfaces;
 using CadoChat.Security.Validation.ConfigLoad;
+using CadoChat.Security.Validation.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -14,6 +15,10 @@ namespace CadoChat.APIGateway.Manager.Services
 {
     public class ConfigurationAuthAPIGatewayService : ConfigurationAuthService, IConfigurationAuthService
     {
+        public ConfigurationAuthAPIGatewayService(ISecurityKeyService<RsaSecurityKey> securityKeyService) 
+            : base(securityKeyService)
+        {
+        }
 
         public override void AddService(WebApplicationBuilder webApplicationBuilder)
         {

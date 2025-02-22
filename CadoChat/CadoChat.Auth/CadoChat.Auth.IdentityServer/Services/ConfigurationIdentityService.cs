@@ -1,6 +1,7 @@
 ﻿using CadoChat.AuthManager;
 using CadoChat.AuthService.Services.Interfaces;
 using CadoChat.Security.Validation.SecutiryInfo;
+using CadoChat.Security.Validation.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -10,22 +11,20 @@ namespace CadoChat.Auth.IdentityServer.Services
     public class ConfigurationIdentityService : IConfigurationIdentityService
     {
 
-        private readonly RsaSecurityKey _rsaKey;
-        private readonly SigningCredentials _signingCredentials;
+        private readonly ISecurityKeyService<RsaSecurityKey> _securityKeyService;
 
-        public ConfigurationIdentityService()
+        public ConfigurationIdentityService(ISecurityKeyService<RsaSecurityKey> securityKeyService)
         {
-            _rsaKey = RsaSecurityKeyService.GetKey();
-            _signingCredentials = RsaSecurityKeyService.GetSigningCredentials(_rsaKey);
+            _securityKeyService = securityKeyService;
         }
 
         public void AddService(WebApplicationBuilder webApplicationBuilder)
         {
             webApplicationBuilder.Services.AddIdentityServer(options =>
             {
-                options.KeyManagement.Enabled = false; // ❌ Отключает автоматическую генерацию ключей
+                options.KeyManagement.Enabled = false; // 
             })
-            .AddSigningCredential(_signingCredentials)
+            .AddSigningCredential(_securityKeyService.SigningCredentials)
             .AddInMemoryClients(IdentityServerConfig.Clients)
             .AddInMemoryApiScopes(IdentityServerConfig.ApiScopes)
             .AddInMemoryIdentityResources(IdentityServerConfig.IdentityResources)

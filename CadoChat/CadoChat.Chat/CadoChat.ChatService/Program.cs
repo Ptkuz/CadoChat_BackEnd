@@ -3,11 +3,12 @@ using CadoChat.Security.APIGateway.Services.Interfaces;
 using CadoChat.Security.Authentication.Middlewaers;
 using CadoChat.Security.Authentication.Services.Interfaces;
 using CadoChat.Security.Cors.Services.Interfaces;
+using CadoChat.Security.Validation.Services;
 using CadoChat.Web.AspNetCore.Logging.Interfaces;
 using CadoChat.Web.AspNetCore.Swagger.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
-var InitializedBuilder = ApplicationBuilderInitializer.CreateInstance(builder);
+var InitializedBuilder = ApplicationBuilderInitializer.CreateInstance(builder, RsaSecurityKeyService.GetInstance());
 
 var loggingService = InitializedBuilder.GetService<ILoggingConfigurationService>(typeof(ILoggingConfigurationService));
 var authService = InitializedBuilder.GetService<IConfigurationAuthService>(typeof(IConfigurationAuthService));
@@ -31,8 +32,6 @@ var app = builder.Build();
 var options = apiGatewayService.GetAPIGatewayOptions(app);
 app.UseForwardedHeaders(options);
 
-
-app.UseMiddleware<ReplaceRequestHostMiddleware>();
 app.UseMiddleware<AccessAPIGatewayMiddleware>();
 
 corsService.UseService(app);

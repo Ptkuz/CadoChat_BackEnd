@@ -9,11 +9,13 @@ using CadoChat.Security.Authentication.Services.Interfaces;
 using CadoChat.Security.Cors.Services;
 using CadoChat.Security.Cors.Services.Interfaces;
 using CadoChat.Security.Validation.ConfigLoad;
+using CadoChat.Security.Validation.Services.Interfaces;
 using CadoChat.Web.AspNetCore.Initialize.Interfaces;
 using CadoChat.Web.AspNetCore.Logging;
 using CadoChat.Web.AspNetCore.Logging.Interfaces;
 using CadoChat.Web.AspNetCore.Swagger;
 using CadoChat.Web.AspNetCore.Swagger.Interfaces;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CadoChat.AuthService.Initialize
 {
@@ -29,8 +31,10 @@ namespace CadoChat.AuthService.Initialize
 
         private readonly WebApplicationBuilder _applicationBuilder;
 
-        private ApplicationBuilderInitializer(WebApplicationBuilder applicationBuilder)
+        private ApplicationBuilderInitializer(WebApplicationBuilder applicationBuilder, 
+            ISecurityKeyService<RsaSecurityKey> securityKeyService)
         {
+
             SecurityConfigLoader.Init(applicationBuilder.Configuration);
             applicationBuilder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
             applicationBuilder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
@@ -40,17 +44,17 @@ namespace CadoChat.AuthService.Initialize
             var configuration = _applicationBuilder.Configuration;
 
             _loggingConfigurationService = new LoggingConfigurationService();
-            _configurationAuthOptions = new ConfigurationAuthAPIGatewayService();
+            _configurationAuthOptions = new ConfigurationAuthAPIGatewayService(securityKeyService);
             _swaggerConfigurationService = new ConfigurationSwaggerAPIGatewayService();
             _corsConfigurationService = new CorsConfigurationService(configuration);
             _apiGatewayConfigurationService = new APIGatewayConfigurationService();
-            _configurationIdentityService = new ConfigurationIdentityService();
+            _configurationIdentityService = new ConfigurationIdentityService(securityKeyService);
         }
 
-        public static IApplicationBuilderInitializer CreateInstance(WebApplicationBuilder applicationBuilder)
+        public static IApplicationBuilderInitializer CreateInstance(WebApplicationBuilder applicationBuilder, ISecurityKeyService<RsaSecurityKey> securityKeyService)
         {
 
-            var instance = new ApplicationBuilderInitializer(applicationBuilder);
+            var instance = new ApplicationBuilderInitializer(applicationBuilder, securityKeyService);
             return instance;
         }
 

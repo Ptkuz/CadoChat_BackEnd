@@ -1,6 +1,7 @@
 ﻿using CadoChat.Security.Authentication.Services.Interfaces;
 using CadoChat.Security.Validation.ConfigLoad;
 using CadoChat.Security.Validation.SecutiryInfo;
+using CadoChat.Security.Validation.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,8 +11,16 @@ namespace CadoChat.Security.Authentication.Services
 {
     public class ConfigurationAuthService : IConfigurationAuthService
     {
+
+        protected readonly ISecurityKeyService<RsaSecurityKey> _securityKeyService;
+
         public virtual string AuthenticationScheme => 
             JwtBearerDefaults.AuthenticationScheme;
+
+        public ConfigurationAuthService(ISecurityKeyService<RsaSecurityKey> securityKeyService)
+        {
+            _securityKeyService = securityKeyService;
+        }
 
         public virtual void AddService(WebApplicationBuilder webApplicationBuilder)
         {
@@ -31,8 +40,6 @@ namespace CadoChat.Security.Authentication.Services
             options.Authority = authService;
             options.RequireHttpsMetadata = true;
 
-            var signingKey = RsaSecurityKeyService.GetKey();
-
             options.TokenValidationParameters = new TokenValidationParameters
             {
 
@@ -40,9 +47,9 @@ namespace CadoChat.Security.Authentication.Services
                 ValidIssuer = authService,
                 ValidateAudience = true,
                 ValidateLifetime = true,
-                IssuerSigningKey = signingKey, // Здесь используется ключ для подписи
-                ValidAudience = AudiencesAccess.ChatApi, // Указание правильной аудитории
-                ValidateIssuerSigningKey = true // Включаем валидацию подписи
+                IssuerSigningKey = _securityKeyService.Key,
+                ValidAudience = AudiencesAccess.ChatApi, 
+                ValidateIssuerSigningKey = true 
             };
         }
     }
