@@ -13,7 +13,7 @@ namespace CadoChat.Auth.IdentityServer.Services
     /// <summary>
     /// Конфигуратор IdentityServer
     /// </summary>
-    public class ConfigurationIdentityService : ConfigurationService, IConfigurationIdentityService
+    public class IdentityServiceConfiguration : ConfigurationService, IIdentityServiceConfiguration
     {
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace CadoChat.Auth.IdentityServer.Services
         /// Инициализировать конфигуратор IdentityServer
         /// </summary>
         /// <param name="securityKeyService">Сервис ключей безопасности</param>
-        public ConfigurationIdentityService(ISecurityKeyService<RsaSecurityKey> securityKeyService)
+        public IdentityServiceConfiguration(ISecurityKeyService<RsaSecurityKey> securityKeyService)
         {
             _securityKeyService = securityKeyService;
         }

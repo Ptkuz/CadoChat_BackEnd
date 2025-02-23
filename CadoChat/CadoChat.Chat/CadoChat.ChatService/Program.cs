@@ -23,12 +23,12 @@ var fileSerializer = serviceProvider.GetRequiredService<IFileSerializer>();
 
 var InitializedBuilder = ApplicationBuilderInitializer.CreateInstance(builder, securityKeyService, fileSerializer);
 
-var loggingService = InitializedBuilder.GetService<ILoggingConfigurationService>(typeof(ILoggingConfigurationService));
-var authService = InitializedBuilder.GetService<IConfigurationAuthService>(typeof(IConfigurationAuthService));
-var swaggerService = InitializedBuilder.GetService<ISwaggerConfigurationService>(typeof(ISwaggerConfigurationService));
-var corsService = InitializedBuilder.GetService<ICorsConfigurationService>(typeof(ICorsConfigurationService));
-var apiGatewayService = InitializedBuilder.GetService<IAPIGatewayConfigurationService>(typeof(IAPIGatewayConfigurationService));
-var authorizationService = InitializedBuilder.GetService<IConfigurationAuthorizationService>(typeof(IConfigurationAuthorizationService));
+var loggingService = InitializedBuilder.GetService<ILoggingConfiguration>(typeof(ILoggingConfiguration));
+var authService = InitializedBuilder.GetService<IAuthConfiguration>(typeof(IAuthConfiguration));
+var swaggerService = InitializedBuilder.GetService<ISwaggerConfiguration>(typeof(ISwaggerConfiguration));
+var corsService = InitializedBuilder.GetService<ICorsConfiguration>(typeof(ICorsConfiguration));
+var apiGatewayService = InitializedBuilder.GetService<IAPIGatewayConfiguration>(typeof(IAPIGatewayConfiguration));
+var authorizationService = InitializedBuilder.GetService<IAuthorizationConfiguration>(typeof(IAuthorizationConfiguration));
 
 builder.Services.AddRouting();
 loggingService.AddService(builder);

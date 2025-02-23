@@ -12,7 +12,7 @@ namespace CadoChat.Web.AspNetCore.Swagger
     /// <summary>
     /// Конфигуратор Swagger
     /// </summary>
-    public class SwaggerConfigurationService : ConfigurationService, ISwaggerConfigurationService
+    public class SwaggerConfiguration : ConfigurationService, ISwaggerConfiguration
     {
 
         /// <summary>

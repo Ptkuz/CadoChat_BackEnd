@@ -6,7 +6,7 @@ namespace CadoChat.AuthService.Services.Interfaces
     /// <summary>
     /// Сервис конфигурации IdentityServer
     /// </summary>
-    public interface IConfigurationIdentityService : IConfigurationService
+    public interface IIdentityServiceConfiguration : IConfigurationService
     {
 
     }

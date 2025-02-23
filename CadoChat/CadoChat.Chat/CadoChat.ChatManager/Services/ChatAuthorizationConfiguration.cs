@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CadoChat.ChatManager.Services
 {
-    public class ConfigurationAuthorizationManagerService : ConfigurationAuthorizationService
+    public class ChatAuthorizationConfiguration : AuthorizationConfiguration
     {
         public override void AddService(WebApplicationBuilder webApplicationBuilder)
         {

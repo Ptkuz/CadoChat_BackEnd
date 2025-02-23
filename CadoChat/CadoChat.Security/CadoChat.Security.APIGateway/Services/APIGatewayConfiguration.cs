@@ -13,7 +13,7 @@ namespace CadoChat.Security.APIGateway.Services
     /// <summary>
     /// Конфигуратор API Gateway
     /// </summary>
-    public class APIGatewayConfigurationService : IAPIGatewayConfigurationService
+    public class APIGatewayConfiguration : IAPIGatewayConfiguration
     {
 
         /// <summary>

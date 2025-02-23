@@ -1,31 +1,37 @@
 ﻿using CadoChat.Security.Authentication.Services;
 using CadoChat.Security.Authentication.Services.Interfaces;
 using CadoChat.Security.Validation.Services.Interfaces;
-using CadoChat.Web.Common.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CadoChat.ChatManager.Services
+namespace CadoChat.APIGateway.Manager.Services
 {
 
     /// <summary>
     /// Конфигуратор аутентификации
     /// </summary>
-    public class ConfigurationAuthManagerService : ConfigurationAuthService, IConfigurationAuthService
+    public class APIGatewayAuthConfiguration : AuthConfiguration, IAuthConfiguration
     {
-
         /// <summary>
         /// Инициализировать конфигуратор аутентификации
         /// </summary>
-        /// <param name="securityKeyService">Сервис ключей безопасности</param>
-        public ConfigurationAuthManagerService(ISecurityKeyService<RsaSecurityKey> securityKeyService) 
+        /// <param name="securityKeyService">Строитель приложения</param>
+        public APIGatewayAuthConfiguration(ISecurityKeyService<RsaSecurityKey> securityKeyService)
             : base(securityKeyService)
         {
+        }
+
+        /// <summary>
+        /// Добавить сервис аутентификации
+        /// </summary>
+        /// <param name="webApplicationBuilder"></param>
+        public override void AddService(WebApplicationBuilder webApplicationBuilder)
+        {
+            webApplicationBuilder.Services
+                .AddAuthentication(AuthenticationScheme)
+                .AddJwtBearer(AuthenticationScheme, ConfigureAuthOptions);
         }
 
         /// <summary>
@@ -34,9 +40,8 @@ namespace CadoChat.ChatManager.Services
         /// <param name="options">Опции аутентификации</param>
         protected override void ConfigureAuthOptions(JwtBearerOptions options)
         {
-            var chatService = GlobalSettings.Services.ChatService;
+
             var authService = GlobalSettings.Services.AuthService;
-            var clientUser = GlobalSettings.Users.ClientUser;
 
             options.Authority = authService.URL;
             options.RequireHttpsMetadata = true;
@@ -46,12 +51,12 @@ namespace CadoChat.ChatManager.Services
 
                 ValidateIssuer = true,
                 ValidIssuer = authService.URL,
-                ValidateAudience = true,
+                ValidateAudience = false,
                 ValidateLifetime = true,
-                IssuerSigningKey = _securityKeyService.Key,
-                ValidAudiences = [chatService.AudiencesAccess.Name],
-                ValidateIssuerSigningKey = true
+                ValidateIssuerSigningKey = true,
+                RequireSignedTokens = true
             };
+
         }
     }
 }

@@ -15,7 +15,7 @@ namespace CadoChat.Security.Cors.Services
     /// <summary>
     /// Конфигуратор CORS
     /// </summary>
-    public class CorsConfigurationService : ConfigurationService, ICorsConfigurationService
+    public class CorsConfiguration : ConfigurationService, ICorsConfiguration
     {
         /// <summary>
         /// Имя политики CORS

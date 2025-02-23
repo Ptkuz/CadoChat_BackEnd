@@ -1,17 +1,18 @@
 ﻿using CadoChat.Web.Common.Services.Interfaces;
+using Microsoft.AspNetCore.Builder;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CadoChat.Security.Authorization.Services.Interfaces
+namespace CadoChat.Security.APIGateway.Services.Interfaces
 {
 
     /// <summary>
-    /// Конфигуратор авторизации
+    /// Конфигуратор API Gateway
     /// </summary>
-    public interface IConfigurationAuthorizationService : IConfigurationService
+    public interface IAPIGatewayConfiguration : IConfigurationService
     {
 
     }

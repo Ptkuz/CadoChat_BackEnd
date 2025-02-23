@@ -9,7 +9,7 @@ namespace CadoChat.Security.Authorization.Services
     /// <summary>
     /// Конфигуратор авторизации
     /// </summary>
-    public class ConfigurationAuthorizationService : ConfigurationService, IConfigurationAuthorizationService
+    public class AuthorizationConfiguration : ConfigurationService, IAuthorizationConfiguration
     {
 
         /// <summary>

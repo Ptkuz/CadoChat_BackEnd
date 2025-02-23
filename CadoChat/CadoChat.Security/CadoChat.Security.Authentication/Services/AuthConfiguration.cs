@@ -12,7 +12,7 @@ namespace CadoChat.Security.Authentication.Services
     /// <summary>
     /// Конфигуратор аутентификации
     /// </summary>
-    public abstract class ConfigurationAuthService : ConfigurationService, IConfigurationAuthService
+    public abstract class AuthConfiguration : ConfigurationService, IAuthConfiguration
     {
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace CadoChat.Security.Authentication.Services
         /// Инициализировать конфигуратор аутентификации
         /// </summary>
         /// <param name="securityKeyService">Сервис ключей безопасности</param>
-        public ConfigurationAuthService(ISecurityKeyService<RsaSecurityKey> securityKeyService)
+        public AuthConfiguration(ISecurityKeyService<RsaSecurityKey> securityKeyService)
         {
             _securityKeyService = securityKeyService;
         }

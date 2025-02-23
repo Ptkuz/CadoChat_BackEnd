@@ -14,7 +14,7 @@ namespace CadoChat.APIGateway.Manager.Services
     /// <summary>
     /// Конфигуратор Swagger
     /// </summary>
-    public class ConfigurationSwaggerAPIGatewayService : SwaggerConfigurationService, ISwaggerConfigurationService
+    public class APIGatewaySwaggerConfiguration : SwaggerConfiguration, ISwaggerConfiguration
     {
 
         /// <summary>

@@ -12,7 +12,7 @@ namespace CadoChat.Security.Cors.Services.Interfaces
     /// <summary>
     /// Конфигуратор CORS
     /// </summary>
-    public interface ICorsConfigurationService : IConfigurationService
+    public interface ICorsConfiguration : IConfigurationService
     {
 
     }

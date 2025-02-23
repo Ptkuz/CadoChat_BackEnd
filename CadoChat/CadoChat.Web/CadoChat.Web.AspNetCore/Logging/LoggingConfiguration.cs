@@ -16,7 +16,7 @@ namespace CadoChat.Web.AspNetCore.Logging
     /// <summary>
     /// Конфигуратор логирования
     /// </summary>
-    public class LoggingConfigurationService : ConfigurationService, ILoggingConfigurationService
+    public class LoggingConfiguration : ConfigurationService, ILoggingConfiguration
     {
 
         /// <summary>

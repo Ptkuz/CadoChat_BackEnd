@@ -13,7 +13,7 @@ namespace CadoChat.Security.Authentication.Services.Interfaces
     /// <summary>
     /// Конфигуратор аутентификации
     /// </summary>
-    public interface IConfigurationAuthService : IConfigurationService
+    public interface IAuthConfiguration : IConfigurationService
     {
         /// <summary>
         /// Схема аутентификации

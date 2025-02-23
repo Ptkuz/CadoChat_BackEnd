@@ -20,12 +20,12 @@ namespace CadoChat.AuthService.Initialize
     public class ApplicationBuilderInitializer : IApplicationBuilderInitializer
     {
 
-        private readonly ILoggingConfigurationService _loggingConfigurationService;
-        private readonly IConfigurationAuthService _configurationAuthOptions;
-        private readonly ISwaggerConfigurationService _swaggerConfigurationService;
-        private readonly ICorsConfigurationService _corsConfigurationService;
-        private readonly IAPIGatewayConfigurationService _apiGatewayConfigurationService;
-        private readonly IConfigurationIdentityService _configurationIdentityService;
+        private readonly ILoggingConfiguration _loggingConfigurationService;
+        private readonly IAuthConfiguration _configurationAuthOptions;
+        private readonly ISwaggerConfiguration _swaggerConfigurationService;
+        private readonly ICorsConfiguration _corsConfigurationService;
+        private readonly IAPIGatewayConfiguration _apiGatewayConfigurationService;
+        private readonly IIdentityServiceConfiguration _configurationIdentityService;
 
         private readonly WebApplicationBuilder _applicationBuilder;
 
@@ -44,12 +44,12 @@ namespace CadoChat.AuthService.Initialize
 
             var configuration = _applicationBuilder.Configuration;
 
-            _loggingConfigurationService = new LoggingConfigurationService();
-            _configurationAuthOptions = new ConfigurationAuthAPIGatewayService(securityKeyService);
-            _swaggerConfigurationService = new ConfigurationSwaggerAPIGatewayService();
-            _corsConfigurationService = new CorsConfigurationService();
-            _apiGatewayConfigurationService = new APIGatewayConfigurationService();
-            _configurationIdentityService = new ConfigurationIdentityService(securityKeyService);
+            _loggingConfigurationService = new LoggingConfiguration();
+            _configurationAuthOptions = new APIGatewayAuthConfiguration(securityKeyService);
+            _swaggerConfigurationService = new APIGatewaySwaggerConfiguration();
+            _corsConfigurationService = new CorsConfiguration();
+            _apiGatewayConfigurationService = new APIGatewayConfiguration();
+            _configurationIdentityService = new IdentityServiceConfiguration(securityKeyService);
         }
 
         public static IApplicationBuilderInitializer CreateInstance(WebApplicationBuilder applicationBuilder,
@@ -66,17 +66,17 @@ namespace CadoChat.AuthService.Initialize
         {
             switch (type)
             {
-                case Type t when t == typeof(ILoggingConfigurationService):
+                case Type t when t == typeof(ILoggingConfiguration):
                     return (TService)_loggingConfigurationService;
-                case Type t when t == typeof(IConfigurationAuthService):
+                case Type t when t == typeof(IAuthConfiguration):
                     return (TService)_configurationAuthOptions;
-                case Type t when t == typeof(ISwaggerConfigurationService):
+                case Type t when t == typeof(ISwaggerConfiguration):
                     return (TService)_swaggerConfigurationService;
-                case Type t when t == typeof(ICorsConfigurationService):
+                case Type t when t == typeof(ICorsConfiguration):
                     return (TService)_corsConfigurationService;
-                case Type t when t == typeof(IAPIGatewayConfigurationService):
+                case Type t when t == typeof(IAPIGatewayConfiguration):
                     return (TService)_apiGatewayConfigurationService;
-                case Type t when t == typeof(IConfigurationIdentityService):
+                case Type t when t == typeof(IIdentityServiceConfiguration):
                     return (TService)_configurationIdentityService;
                 default:
                     throw new InvalidCastException($"Cannot cast {type} to {typeof(TService)}");

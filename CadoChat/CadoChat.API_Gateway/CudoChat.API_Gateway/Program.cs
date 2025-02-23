@@ -28,12 +28,12 @@ var fileSerializer = serviceProvider.GetRequiredService<IFileSerializer>();
 var InitializedBuilder = ApplicationBuilderInitializer.CreateInstance(builder, securityKeyService, fileSerializer);
 
 
-var loggingService = InitializedBuilder.GetService<ILoggingConfigurationService>(typeof(ILoggingConfigurationService));
-var authApiGatewayService = InitializedBuilder.GetService<IConfigurationAuthService>(typeof(IConfigurationAuthService));
-var swaggerService = InitializedBuilder.GetService<ISwaggerConfigurationService>(typeof(ISwaggerConfigurationService));
-var corsService = InitializedBuilder.GetService<ICorsConfigurationService>(typeof(ICorsConfigurationService));
-var apiGatewayService = InitializedBuilder.GetService<IAPIGatewayConfigurationService>(typeof(IAPIGatewayConfigurationService));
-var identityServerService = InitializedBuilder.GetService<IConfigurationIdentityService>(typeof(IConfigurationIdentityService));
+var loggingService = InitializedBuilder.GetService<ILoggingConfiguration>(typeof(ILoggingConfiguration));
+var authApiGatewayService = InitializedBuilder.GetService<IAuthConfiguration>(typeof(IAuthConfiguration));
+var swaggerService = InitializedBuilder.GetService<ISwaggerConfiguration>(typeof(ISwaggerConfiguration));
+var corsService = InitializedBuilder.GetService<ICorsConfiguration>(typeof(ICorsConfiguration));
+var apiGatewayService = InitializedBuilder.GetService<IAPIGatewayConfiguration>(typeof(IAPIGatewayConfiguration));
+var identityServerService = InitializedBuilder.GetService<IIdentityServiceConfiguration>(typeof(IIdentityServiceConfiguration));
 
 builder.Services.AddRouting();
 

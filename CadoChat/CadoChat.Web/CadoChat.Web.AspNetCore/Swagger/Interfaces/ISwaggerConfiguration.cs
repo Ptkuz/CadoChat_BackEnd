@@ -6,7 +6,7 @@ namespace CadoChat.Web.AspNetCore.Swagger.Interfaces
     /// <summary>
     /// Конфигуратор Swagger
     /// </summary>
-    public interface ISwaggerConfigurationService : IConfigurationService
+    public interface ISwaggerConfiguration : IConfigurationService
     {
 
     }
