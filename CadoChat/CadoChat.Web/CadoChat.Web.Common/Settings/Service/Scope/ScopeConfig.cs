@@ -6,10 +6,20 @@ using System.Threading.Tasks;
 
 namespace CadoChat.Web.Common.Settings.Service.Scope
 {
+
+    /// <summary>
+    /// Конфигурация области видимости
+    /// </summary>
     public class ScopeConfig
     {
-        public string Name { get; set; }
+        /// <summary>
+        /// Идентификатор области видимости
+        /// </summary>
+        public string Name { get; set; } = null!;
 
-        public string DisplayValiue { get; set; }
+        /// <summary>
+        /// Отображаемое значение области видимости
+        /// </summary>
+        public string DisplayValiue { get; set; } = null!;
     }
 }

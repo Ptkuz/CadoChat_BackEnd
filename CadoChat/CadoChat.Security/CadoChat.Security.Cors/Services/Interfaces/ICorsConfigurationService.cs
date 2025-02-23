@@ -1,4 +1,4 @@
-﻿using CadoChat.Web.Common.Interfaces;
+﻿using CadoChat.Web.Common.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using System;
@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace CadoChat.Security.Cors.Services.Interfaces
 {
+    /// <summary>
+    /// Конфигуратор CORS
+    /// </summary>
     public interface ICorsConfigurationService : IConfigurationService
     {
 

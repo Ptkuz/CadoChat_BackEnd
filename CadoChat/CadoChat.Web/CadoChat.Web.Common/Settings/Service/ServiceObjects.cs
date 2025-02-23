@@ -7,10 +7,26 @@ using System.Threading.Tasks;
 
 namespace CadoChat.Web.Common.Settings.Service
 {
+
+    /// <summary>
+    /// Конфигурация сервисов
+    /// </summary>
     public class ServiceObjects
     {
-        public ServiceConfig AuthService { get; set; }
-        public ChatService ChatService { get; set; }
-        public ServiceConfig API_Gateway { get; set; }
+
+        /// <summary>
+        /// Конфигурация сервиса авторизации
+        /// </summary>
+        public ServiceConfig AuthService { get; set; } = null!;
+
+        /// <summary>
+        /// Конфигурация сервиса чата
+        /// </summary>
+        public ChatService ChatService { get; set; } = null!;
+
+        /// <summary>
+        /// Конфигурация API шлюза
+        /// </summary>
+        public ServiceConfig API_Gateway { get; set; } = null!;
     }
 }

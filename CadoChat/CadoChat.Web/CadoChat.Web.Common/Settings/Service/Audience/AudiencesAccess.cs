@@ -6,10 +6,21 @@ using System.Threading.Tasks;
 
 namespace CadoChat.Web.Common.Settings.Service.Audience
 {
+
+    /// <summary>
+    /// Конфигурация получателя токена доступа
+    /// </summary>
     public class AudiencesAccess
     {
-        public string Name { get; set; }
 
-        public string DisplayValue { get; set; }
+        /// <summary>
+        /// Имя получателя
+        /// </summary>
+        public string Name { get; set; } = null!;
+
+        /// <summary>
+        /// Отображаемое значение
+        /// </summary>
+        public string DisplayValue { get; set; } = null!;
     }
 }

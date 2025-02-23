@@ -43,8 +43,7 @@ corsService.AddService(builder);
 
 var app = builder.Build();
 
-var options = apiGatewayService.GetAPIGatewayOptions(app);
-app.UseForwardedHeaders(options);
+apiGatewayService.UseService(app);
 
 app.UseMiddleware<AccessAPIGatewayMiddleware>();
 

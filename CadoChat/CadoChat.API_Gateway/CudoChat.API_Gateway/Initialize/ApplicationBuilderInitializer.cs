@@ -11,7 +11,6 @@ using CadoChat.Security.Cors.Services;
 using CadoChat.Security.Cors.Services.Interfaces;
 using CadoChat.Security.Validation.ConfigLoad;
 using CadoChat.Security.Validation.Services.Interfaces;
-using CadoChat.Web.AspNetCore.Initialize.Interfaces;
 using CadoChat.Web.AspNetCore.Logging;
 using CadoChat.Web.AspNetCore.Logging.Interfaces;
 using CadoChat.Web.AspNetCore.Swagger;

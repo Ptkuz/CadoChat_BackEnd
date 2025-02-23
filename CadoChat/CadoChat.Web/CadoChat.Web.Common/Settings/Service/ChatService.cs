@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 
 namespace CadoChat.Web.Common.Settings.Service
 {
+
+    /// <summary>
+    /// Конфигурация сервиса чата
+    /// </summary>
     public class ChatService : ServiceConfig
     {
-        public ScopeConfig SendMessageScope { get; set; }
 
-        public ScopeConfig ReceiveMessageScope { get; set; }
-
-        public ChatService() 
-        {
-            SendMessageScope = new ScopeConfig() { Name = "ChatService.SendMessage", DisplayValiue = "Send Message" };
-            ReceiveMessageScope = new ScopeConfig() { Name = "ChatService.ReceiveMessage", DisplayValiue = "Receive Message" };
-        }
+        /// <summary>
+        /// Области видимости
+        /// </summary>
+        public ChatScopeConfig ChatScopeConfig { get; set; } = null!;
     }
 }

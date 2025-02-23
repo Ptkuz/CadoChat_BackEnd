@@ -14,7 +14,7 @@ namespace CadoChat.AuthManager
 
         static IdentityServerConfig()
         {
-            GlobalSettings = GlobalSettingsLoader.GetInstance().GlobalSettings;
+            GlobalSettings = GlobalSettingsLoader.Instance!.GlobalSettings;
         }
 
         public static ISecurityUser ClientUser =>
@@ -46,8 +46,8 @@ namespace CadoChat.AuthManager
             var authService = GlobalSettings.Services.AuthService;
             var chatService = GlobalSettings.Services.ChatService;
 
-            ScopeConfig[] aggregateScopes = [chatService.ReceiveMessageScope, 
-                chatService.SendMessageScope];
+            ScopeConfig[] aggregateScopes = [chatService.ChatScopeConfig.ReceiveMessageScope, 
+                chatService.ChatScopeConfig.SendMessageScope];
              
             foreach (var scope in aggregateScopes)
             {

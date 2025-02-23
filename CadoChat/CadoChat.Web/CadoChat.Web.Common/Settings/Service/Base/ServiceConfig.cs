@@ -8,11 +8,27 @@ using System.Threading.Tasks;
 
 namespace CadoChat.Web.Common.Settings.Service.Base
 {
+
+    /// <summary>
+    /// Конфигурация сервиса
+    /// </summary>
     public class ServiceConfig
     {
-        public string Name { get; set; }
-        public string URL { get; set; }
-        public AudiencesAccess AudiencesAccess { get; set; }
+
+        /// <summary>
+        /// Идентификатор сервиса
+        /// </summary>
+        public string Name { get; set; } = null!;
+
+        /// <summary>
+        /// URL сервиса
+        /// </summary>
+        public string URL { get; set; } = null!;
+
+        /// <summary>
+        /// Получатель токена доступа
+        /// </summary>
+        public AudiencesAccess AudiencesAccess { get; set; } = null!;
 
     }
 }

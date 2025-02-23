@@ -13,13 +13,26 @@ using System.Threading.Tasks;
 
 namespace CadoChat.AuthManager.Services
 {
+
+    /// <summary>
+    /// Конфигуратор аутентификации
+    /// </summary>
     public class ConfigurationAuthManagerService : ConfigurationAuthService, IConfigurationAuthService
     {
+
+        /// <summary>
+        /// Инициализировать конфигуратор аутентификации
+        /// </summary>
+        /// <param name="securityKeyService">Сервис ключей безопасности</param>
         public ConfigurationAuthManagerService(ISecurityKeyService<RsaSecurityKey> securityKeyService) 
             : base(securityKeyService)
         {
         }
 
+        /// <summary>
+        /// Настроить опции аутентификации
+        /// </summary>
+        /// <param name="options">Опции аутентификации</param>
         protected override void ConfigureAuthOptions(JwtBearerOptions options)
         {
             var authService = GlobalSettings.Services.AuthService;

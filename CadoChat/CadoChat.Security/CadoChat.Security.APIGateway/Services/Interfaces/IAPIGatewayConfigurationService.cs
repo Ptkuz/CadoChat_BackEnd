@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using CadoChat.Web.Common.Services.Interfaces;
+using Microsoft.AspNetCore.Builder;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +8,12 @@ using System.Threading.Tasks;
 
 namespace CadoChat.Security.APIGateway.Services.Interfaces
 {
-    public interface IAPIGatewayConfigurationService
-    {
 
-        ForwardedHeadersOptions GetAPIGatewayOptions(WebApplication app);
+    /// <summary>
+    /// Конфигуратор API Gateway
+    /// </summary>
+    public interface IAPIGatewayConfigurationService : IConfigurationService
+    {
 
     }
 }

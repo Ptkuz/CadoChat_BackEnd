@@ -1,19 +1,25 @@
-﻿using CadoChat.Security.Validation.ConfigLoad;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.IdentityModel.Tokens;
 
 namespace CadoChat.Security.Validation.Services.Interfaces
 {
-    public interface ISecurityKeyService<TKey> 
+
+    /// <summary>
+    /// Сервис для работы с ключом безопасности
+    /// </summary>
+    /// <typeparam name="TKey">Ключ безопасности</typeparam>
+    public interface ISecurityKeyService<TKey>
         where TKey : SecurityKey
     {
+
+        /// <summary>
+        /// Ключ безопасности
+        /// </summary>
         TKey Key { get; }
 
+
+        /// <summary>
+        /// Параметры подписи
+        /// </summary>
         SigningCredentials SigningCredentials { get; }
     }
 }

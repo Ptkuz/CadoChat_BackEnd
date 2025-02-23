@@ -2,20 +2,17 @@
 using CadoChat.IO.Json.Services.Interfaces;
 using CadoChat.Security.APIGateway.Services;
 using CadoChat.Security.APIGateway.Services.Interfaces;
-using CadoChat.Security.Authentication.Services;
 using CadoChat.Security.Authentication.Services.Interfaces;
-using CadoChat.Security.Authorization.Services;
 using CadoChat.Security.Authorization.Services.Interfaces;
 using CadoChat.Security.Cors.Services;
 using CadoChat.Security.Cors.Services.Interfaces;
-using CadoChat.Security.Validation.ConfigLoad;
 using CadoChat.Security.Validation.Services.Interfaces;
-using CadoChat.Web.AspNetCore.Initialize.Interfaces;
 using CadoChat.Web.AspNetCore.Logging;
 using CadoChat.Web.AspNetCore.Logging.Interfaces;
 using CadoChat.Web.AspNetCore.Swagger;
 using CadoChat.Web.AspNetCore.Swagger.Interfaces;
 using CadoChat.Web.Common.Services;
+using CadoChat.Web.Common.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CadoChat.ChatService.Initialize
@@ -32,7 +29,7 @@ namespace CadoChat.ChatService.Initialize
 
         private readonly WebApplicationBuilder _applicationBuilder;
 
-        private ApplicationBuilderInitializer(WebApplicationBuilder applicationBuilder, 
+        private ApplicationBuilderInitializer(WebApplicationBuilder applicationBuilder,
             ISecurityKeyService<RsaSecurityKey> securityKeyService, IFileSerializer fileSerializer)
         {
 
@@ -56,7 +53,7 @@ namespace CadoChat.ChatService.Initialize
             _configurationAuthorizationService = new ConfigurationAuthorizationManagerService();
         }
 
-        public static IApplicationBuilderInitializer CreateInstance(WebApplicationBuilder applicationBuilder, 
+        public static IApplicationBuilderInitializer CreateInstance(WebApplicationBuilder applicationBuilder,
             ISecurityKeyService<RsaSecurityKey> securityKeyService, IFileSerializer fileSerializer)
         {
 
@@ -65,11 +62,11 @@ namespace CadoChat.ChatService.Initialize
         }
 
 
-        public TService GetService<TService>(Type type) 
+        public TService GetService<TService>(Type type)
             where TService : class
         {
 
-            switch (type) 
+            switch (type)
             {
                 case Type t when t == typeof(ILoggingConfigurationService):
                     return (TService)_loggingConfigurationService;

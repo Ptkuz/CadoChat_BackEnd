@@ -6,9 +6,21 @@ using System.Threading.Tasks;
 
 namespace CadoChat.Web.Common.Settings.User
 {
+
+    /// <summary>
+    /// Конфигурация пользователей
+    /// </summary>
     public class UserObjects
     {
-        public UserConfig ClientUser { get; set; }
-        public UserConfig AdminUser { get; set; }
+
+        /// <summary>
+        /// Конфигурация клиента
+        /// </summary>
+        public UserConfig ClientUser { get; set; } = null!;
+
+        /// <summary>
+        /// Конфигурация администратора
+        /// </summary>
+        public UserConfig AdminUser { get; set; } = null!;
     }
 }

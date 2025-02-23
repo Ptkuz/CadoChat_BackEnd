@@ -5,22 +5,40 @@ using Microsoft.Extensions.Logging;
 
 namespace CadoChat.Security.Authentication.Middlewaers
 {
+
+    /// <summary>
+    /// Middleware для обработки ошибок маршрутизации API Gateway
+    /// </summary>
     public class AccessAPIGatewayMiddleware
     {
+        /// <summary>
+        /// Следующий обработчик запроса
+        /// </summary>
         private readonly RequestDelegate _next;
-        private readonly ILogger<AccessAPIGatewayMiddleware> _logger;
-        private readonly IConfiguration _configuration;
 
-        public AccessAPIGatewayMiddleware(RequestDelegate next, ILogger<AccessAPIGatewayMiddleware> logger, IConfiguration configuration)
+        /// <summary>
+        /// Логгер
+        /// </summary>
+        private readonly ILogger<AccessAPIGatewayMiddleware> _logger;
+
+        /// <summary>
+        /// Инициализировать Middleware для обработки ошибок маршрутизации API Gateway
+        /// </summary>
+        /// <param name="next">Следующий обработчик запроса</param>
+        /// <param name="logger">Логгер</param>
+        public AccessAPIGatewayMiddleware(RequestDelegate next, ILogger<AccessAPIGatewayMiddleware> logger)
         {
             _next = next;
             _logger = logger;
-            _configuration = configuration;
         }
 
+        /// <summary>
+        /// Обработать запрос
+        /// </summary>
+        /// <param name="context">Http контекст</param>
         public async Task Invoke(HttpContext context)
         {
-            var apiGateway = GlobalSettingsLoader.GetInstance().GlobalSettings.Services.API_Gateway;
+            var apiGateway = GlobalSettingsLoader.Instance!.GlobalSettings.Services.API_Gateway;
 
             var requestHost = context.Request.Host.Value;
 

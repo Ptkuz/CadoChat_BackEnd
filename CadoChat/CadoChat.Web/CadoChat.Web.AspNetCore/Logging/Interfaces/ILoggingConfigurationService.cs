@@ -1,4 +1,4 @@
-﻿using CadoChat.Web.Common.Interfaces;
+﻿using CadoChat.Web.Common.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Logging;
 using System;

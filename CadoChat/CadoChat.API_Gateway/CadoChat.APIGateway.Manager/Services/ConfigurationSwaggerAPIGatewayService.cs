@@ -10,9 +10,17 @@ using System.Threading.Tasks;
 
 namespace CadoChat.APIGateway.Manager.Services
 {
+
+    /// <summary>
+    /// Конфигуратор Swagger
+    /// </summary>
     public class ConfigurationSwaggerAPIGatewayService : SwaggerConfigurationService, ISwaggerConfigurationService
     {
 
+        /// <summary>
+        /// Инициализировать конфигуратор Swagger
+        /// </summary>
+        /// <param name="applicationBuilder">Собранное приложение</param>
         public override void UseService(WebApplication applicationBuilder)
         {
             if (applicationBuilder.Environment.IsDevelopment())

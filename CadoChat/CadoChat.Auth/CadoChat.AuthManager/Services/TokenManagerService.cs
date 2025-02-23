@@ -1,14 +1,10 @@
 ﻿using CadoChat.AuthManager.Services.Interfaces;
-using CadoChat.Security.Validation.ConfigLoad;
-using CadoChat.Security.Validation.SecutiryInfo;
-using CadoChat.Security.Validation.Services;
 using CadoChat.Security.Validation.Services.Interfaces;
 using CadoChat.Web.Common.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 
 namespace CadoChat.AuthManager.Services
 {
@@ -25,7 +21,7 @@ namespace CadoChat.AuthManager.Services
         public string CreateAccessTokenAsync(IdentityUser user)
         {
 
-            var globalSettings = GlobalSettingsLoader.GetInstance();
+            var globalSettings = GlobalSettingsLoader.Instance;
 
             var authService = globalSettings.GlobalSettings.Services.AuthService;
             var chatService = globalSettings.GlobalSettings.Services.ChatService;
@@ -39,9 +35,9 @@ namespace CadoChat.AuthManager.Services
                 Issuer = authService.URL,
                 Audience = chatService.AudiencesAccess.Name,
                 Subject = new ClaimsIdentity(new[]
-                { 
-                    new Claim("scope", chatService.SendMessageScope.Name),
-                    new Claim("scope", chatService.ReceiveMessageScope.Name)
+                {
+                    new Claim("scope", chatService.ChatScopeConfig.SendMessageScope.Name),
+                    new Claim("scope", chatService.ChatScopeConfig.ReceiveMessageScope.Name)
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(clientUser.AccessTokenLifetime),
                 SigningCredentials = _securityKeyService.SigningCredentials

@@ -1,24 +1,26 @@
-﻿using CadoChat.Security.Validation.ConfigLoad;
-using CadoChat.Security.Validation.Services.Interfaces;
+﻿using CadoChat.Security.Validation.Services.Interfaces;
 using CadoChat.Web.Common.Services;
-using CadoChat.Web.Common.Settings;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CadoChat.Security.Validation.Services
 {
+
+    /// <summary>
+    /// Сервис для работы с ключом безопасности
+    /// </summary>
     public class RsaSecurityKeyService : ISecurityKeyService<RsaSecurityKey>
     {
 
+        /// <summary>
+        /// Ключ безопасности RSA
+        /// </summary>
         private RsaSecurityKey? key;
 
-        public RsaSecurityKey Key 
+        /// <summary>
+        /// Ключ безопасности RSA
+        /// </summary>
+        public RsaSecurityKey Key
         {
             get
             {
@@ -29,11 +31,17 @@ namespace CadoChat.Security.Validation.Services
                 }
                 return key;
 
-            } 
+            }
         }
 
+        /// <summary>
+        /// Параметры подписи
+        /// </summary>
         private SigningCredentials? signingCredentials;
 
+        /// <summary>
+        /// Параметры подписи
+        /// </summary>
         public SigningCredentials SigningCredentials
         {
             get
@@ -46,14 +54,21 @@ namespace CadoChat.Security.Validation.Services
             }
         }
 
+        /// <summary>
+        /// Инициализировать сервис для работы с ключом безопасности
+        /// </summary>
         public RsaSecurityKeyService()
         {
 
         }
 
+        /// <summary>
+        /// Получить ключ безопасности
+        /// </summary>
+        /// <returns>Ключ безопасности RSA</returns>
         private RsaSecurityKey GetKey()
         {
-            var globalSettins = GlobalSettingsLoader.GetInstance().GlobalSettings;
+            var globalSettins = GlobalSettingsLoader.Instance!.GlobalSettings;
 
             var rsa = RSA.Create(2048);
             rsa.ImportRSAPrivateKey(Convert.FromBase64String(globalSettins._privateKey), out _);
@@ -65,6 +80,10 @@ namespace CadoChat.Security.Validation.Services
             return signingKey;
         }
 
+        /// <summary>
+        /// Получить параметры подписи
+        /// </summary>
+        /// <returns>Параметры подписи</returns>
         private SigningCredentials GetSigningCredentials()
         {
             var rsaKey = GetKey();
