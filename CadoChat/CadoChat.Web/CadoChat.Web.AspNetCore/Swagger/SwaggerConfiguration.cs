@@ -1,5 +1,6 @@
 ﻿using CadoChat.Web.AspNetCore.Swagger.Interfaces;
 using CadoChat.Web.Common.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,8 +13,10 @@ namespace CadoChat.Web.AspNetCore.Swagger
     /// <summary>
     /// Конфигуратор Swagger
     /// </summary>
-    public class SwaggerConfiguration : ConfigurationService, ISwaggerConfiguration
+    public abstract class SwaggerConfiguration : ConfigurationService, ISwaggerConfiguration
     {
+
+        public abstract string SwaggerTitle { get; }
 
         /// <summary>
         /// Добавить сервис Swagger
@@ -44,9 +47,9 @@ namespace CadoChat.Web.AspNetCore.Swagger
         /// <param name="options"></param>
         private void ApplySettingsWithAuthorization(SwaggerGenOptions options)
         {
-            options.SwaggerDoc("v1", new OpenApiInfo { Title = "API Gateway", Version = "v1" });
+            options.SwaggerDoc("v1", new OpenApiInfo { Title = SwaggerTitle, Version = "v1" });
 
-            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,
                 Description = "Введите токен в формате: Bearer {token}",
@@ -62,7 +65,7 @@ namespace CadoChat.Web.AspNetCore.Swagger
                             Reference = new OpenApiReference
                             {
                                 Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
+                                Id = JwtBearerDefaults.AuthenticationScheme
                             }
                         },
                         new List<string>()

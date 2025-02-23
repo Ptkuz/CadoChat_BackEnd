@@ -1,6 +1,5 @@
 ﻿using CadoChat.AuthManager;
 using CadoChat.AuthService.Services.Interfaces;
-using CadoChat.Security.Validation.SecutiryInfo;
 using CadoChat.Security.Validation.Services.Interfaces;
 using CadoChat.Web.Common.Services;
 using Microsoft.AspNetCore.Builder;
@@ -38,7 +37,7 @@ namespace CadoChat.Auth.IdentityServer.Services
         {
             webApplicationBuilder.Services.AddIdentityServer(options =>
             {
-                options.KeyManagement.Enabled = false; 
+                options.KeyManagement.Enabled = false;
             })
             .AddSigningCredential(_securityKeyService.SigningCredentials)
             .AddInMemoryClients(IdentityServerConfig.GetClients())

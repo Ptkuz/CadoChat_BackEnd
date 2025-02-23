@@ -16,6 +16,13 @@ namespace CadoChat.APIGateway.Manager.Services
     /// </summary>
     public class APIGatewaySwaggerConfiguration : SwaggerConfiguration, ISwaggerConfiguration
     {
+        public override string SwaggerTitle
+        {
+            get
+            {
+                return GlobalSettings.Services.ChatService.Name;
+            }
+        }
 
         /// <summary>
         /// Инициализировать конфигуратор Swagger
@@ -28,9 +35,9 @@ namespace CadoChat.APIGateway.Manager.Services
                 applicationBuilder.UseSwagger();
                 applicationBuilder.UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Gateway V1");
-                    c.SwaggerEndpoint("/auth/swagger/v1/swagger.json", "AuthService"); 
-                    c.SwaggerEndpoint("/chat/swagger/v1/swagger.json", "ChatService");
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", GlobalSettings.Services.API_Gateway.Name);
+                    c.SwaggerEndpoint("/auth/swagger/v1/swagger.json", GlobalSettings.Services.AuthService.Name); 
+                    c.SwaggerEndpoint("/chat/swagger/v1/swagger.json", GlobalSettings.Services.ChatService.Name);
                     c.RoutePrefix = "swagger";
                 });
             }

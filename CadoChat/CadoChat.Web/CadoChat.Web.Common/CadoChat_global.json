@@ -13,7 +13,7 @@
 			"URL": "https://localhost:7167",
 			"AudiencesAccess": {
 				"Name": "chat_api",
-				"DisplayValue": "AuthService API"
+				"DisplayValue": "ChatService API"
 			}
 		},
 		"API_Gateway": {
