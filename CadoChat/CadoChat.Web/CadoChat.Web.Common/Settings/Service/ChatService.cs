@@ -20,6 +20,9 @@ namespace CadoChat.Web.Common.Settings.Service
         /// </summary>
         public ChatScopeConfig ChatScopeConfig { get; set; } = null!;
 
+        /// <summary>
+        /// Инициализировать конфигурацию сервиса чата
+        /// </summary>
         public ChatService() 
         {
             ChatScopeConfig = new ChatScopeConfig();
