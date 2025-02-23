@@ -40,7 +40,8 @@ namespace CadoChat.AuthManager.Services
                 Audience = chatService.AudiencesAccess.Name,
                 Subject = new ClaimsIdentity(new[]
                 { 
-                    new Claim("scope", AccessScopes.SendMessage.Key) 
+                    new Claim("scope", chatService.SendMessageScope.Name),
+                    new Claim("scope", chatService.ReceiveMessageScope.Name)
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(clientUser.AccessTokenLifetime),
                 SigningCredentials = _securityKeyService.SigningCredentials

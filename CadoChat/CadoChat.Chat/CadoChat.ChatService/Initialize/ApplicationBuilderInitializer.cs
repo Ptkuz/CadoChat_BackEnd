@@ -4,6 +4,8 @@ using CadoChat.Security.APIGateway.Services;
 using CadoChat.Security.APIGateway.Services.Interfaces;
 using CadoChat.Security.Authentication.Services;
 using CadoChat.Security.Authentication.Services.Interfaces;
+using CadoChat.Security.Authorization.Services;
+using CadoChat.Security.Authorization.Services.Interfaces;
 using CadoChat.Security.Cors.Services;
 using CadoChat.Security.Cors.Services.Interfaces;
 using CadoChat.Security.Validation.ConfigLoad;
@@ -23,6 +25,7 @@ namespace CadoChat.ChatService.Initialize
 
         private readonly ILoggingConfigurationService _loggingConfigurationService;
         private readonly IConfigurationAuthService _configurationAuthOptions;
+        private readonly IConfigurationAuthorizationService _configurationAuthorizationService;
         private readonly ISwaggerConfigurationService _swaggerConfigurationService;
         private readonly ICorsConfigurationService _corsConfigurationService;
         private readonly IAPIGatewayConfigurationService _apiGatewayConfigurationService;
@@ -50,6 +53,7 @@ namespace CadoChat.ChatService.Initialize
             _swaggerConfigurationService = new SwaggerConfigurationService();
             _corsConfigurationService = new CorsConfigurationService();
             _apiGatewayConfigurationService = new APIGatewayConfigurationService();
+            _configurationAuthorizationService = new ConfigurationAuthorizationManagerService();
         }
 
         public static IApplicationBuilderInitializer CreateInstance(WebApplicationBuilder applicationBuilder, 
@@ -77,6 +81,8 @@ namespace CadoChat.ChatService.Initialize
                     return (TService)_corsConfigurationService;
                 case Type t when t == typeof(IAPIGatewayConfigurationService):
                     return (TService)_apiGatewayConfigurationService;
+                case Type t when t == typeof(IConfigurationAuthorizationService):
+                    return (TService)_configurationAuthorizationService;
                 default:
                     throw new InvalidCastException($"Cannot cast {type} to {typeof(TService)}");
             }

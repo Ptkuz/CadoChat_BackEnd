@@ -1,7 +1,7 @@
 ﻿using CadoChat.Security.Common.Exceptions;
 using CadoChat.Security.Cors.Services.Interfaces;
 using CadoChat.Web.Common.Services;
-using CadoChat.Web.Common.Settings.Service;
+using CadoChat.Web.Common.Settings.Service.Base;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.Configuration;

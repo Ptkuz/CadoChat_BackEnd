@@ -28,10 +28,16 @@ namespace CadoChat.Security.Validation.SecutiryInfo
         public ClientUser()
         {
 
-            var clientUser = GlobalSettingsLoader.GetInstance().GlobalSettings.Users.ClientUser;
+            var settings = GlobalSettingsLoader.GetInstance().GlobalSettings;
+
+            var clientUser = settings.Users.ClientUser;
+            var authService = settings.Services.AuthService;
+            var chatService = settings.Services.ChatService;
+
+            string[] scopes = [chatService.SendMessageScope.Name, chatService.ReceiveMessageScope.Name];
 
             Id = clientUser.Id;
-            Scopes = [AccessScopes.SendMessage.Key, AccessScopes.ReceiveMessage.Key];
+            Scopes = scopes;
             AccessTokenLifetime = clientUser.AccessTokenLifetime;
             AllowedGrantTypes = GrantTypes.ClientCredentials;
             RequireClientSecret = clientUser.RequireClientSecret;

@@ -13,7 +13,6 @@ using CadoChat.Security.Validation.Services;
 using CadoChat.Security.Validation.Services.Interfaces;
 using CadoChat.Web.AspNetCore.Logging.Interfaces;
 using CadoChat.Web.AspNetCore.Swagger.Interfaces;
-using CadoChat.Web.Common.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

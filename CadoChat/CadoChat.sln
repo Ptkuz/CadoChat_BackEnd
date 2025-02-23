@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CadoChat.IO.Json", "CadoCha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CadoChat.ChatManager", "CadoChat.Chat\CadoChat.ChatManager\CadoChat.ChatManager.csproj", "{839DA12F-30B0-4E66-9D44-32322A8192A1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CadoChat.Security.Authorization", "CadoChat.Security\CadoChat.Security.Authorization\CadoChat.Security.Authorization.csproj", "{5C9E6D70-1B30-4537-9A01-EB8284386E5C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,10 @@ Global
 		{839DA12F-30B0-4E66-9D44-32322A8192A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{839DA12F-30B0-4E66-9D44-32322A8192A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{839DA12F-30B0-4E66-9D44-32322A8192A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C9E6D70-1B30-4537-9A01-EB8284386E5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C9E6D70-1B30-4537-9A01-EB8284386E5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C9E6D70-1B30-4537-9A01-EB8284386E5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C9E6D70-1B30-4537-9A01-EB8284386E5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -131,6 +137,7 @@ Global
 		{18B022C0-5A59-46DB-96F4-27816D93BFD6} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
 		{D0780604-463B-43E7-AFFB-CBCD835974ED} = {2BE15DD9-31DB-4B16-A9E1-91E99EC2C878}
 		{839DA12F-30B0-4E66-9D44-32322A8192A1} = {17E88608-D737-4855-9919-25A089A24DB4}
+		{5C9E6D70-1B30-4537-9A01-EB8284386E5C} = {ED21670B-4021-4ACF-A23E-4557B3420DA0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FCB0A17-A169-4FEB-8A30-57BCD1507F3A}

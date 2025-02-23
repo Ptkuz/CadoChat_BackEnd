@@ -14,10 +14,6 @@
 			"AudiencesAccess": {
 				"Name": "chat_api",
 				"DisplayValue": "AuthService API"
-			},
-			"Scopes": {
-				"SendMessage": "send message",
-				"ReceiveMessage": "reseive message"
 			}
 		},
 		"API_Gateway": {
