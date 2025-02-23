@@ -19,5 +19,10 @@ namespace CadoChat.Web.Common.Settings.Service
         /// Области видимости
         /// </summary>
         public ChatScopeConfig ChatScopeConfig { get; set; } = null!;
+
+        public ChatService() 
+        {
+            ChatScopeConfig = new ChatScopeConfig();
+        }
     }
 }

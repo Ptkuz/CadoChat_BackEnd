@@ -50,8 +50,7 @@ builder.Services.AddHeaderRouting();
 
 var app = builder.Build();
 
-var forwardedHeadersOptions = apiGatewayService.GetAPIGatewayOptions(app);
-app.UseForwardedHeaders(forwardedHeadersOptions);
+apiGatewayService.UseService(app);
 
 app.UseMiddleware<AccessAPIGatewayMiddleware>();
 

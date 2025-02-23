@@ -19,11 +19,11 @@ namespace CadoChat.ChatManager.Services
 
             webApplicationBuilder.Services.AddAuthorization(options =>
             {
-                options.AddPolicy(chatService.SendMessageScope.Name, policy =>
-                    policy.RequireClaim("scope", chatService.SendMessageScope.Name));
+                options.AddPolicy(chatService.ChatScopeConfig.SendMessageScope.Name, policy =>
+                    policy.RequireClaim("scope", chatService.ChatScopeConfig.SendMessageScope.Name));
 
-                options.AddPolicy(chatService.ReceiveMessageScope.Name, policy =>
-                   policy.RequireClaim("scope", chatService.ReceiveMessageScope.Name));
+                options.AddPolicy(chatService.ChatScopeConfig.ReceiveMessageScope.Name, policy =>
+                   policy.RequireClaim("scope", chatService.ChatScopeConfig.ReceiveMessageScope.Name));
             });
         }
     }

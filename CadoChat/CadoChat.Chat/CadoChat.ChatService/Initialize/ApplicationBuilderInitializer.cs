@@ -63,7 +63,7 @@ namespace CadoChat.ChatService.Initialize
 
 
         public TService GetService<TService>(Type type)
-            where TService : class
+            where TService : IConfigurationService
         {
 
             switch (type)
