@@ -11,7 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CadoChat.Security.Authentication.Services
 {
-    public class ConfigurationAuthService : IConfigurationAuthService
+    public abstract class ConfigurationAuthService : IConfigurationAuthService
     {
 
         protected readonly ISecurityKeyService<RsaSecurityKey> _securityKeyService;
@@ -36,26 +36,6 @@ namespace CadoChat.Security.Authentication.Services
         }
 
 
-        private void ConfigureAuthOptions(JwtBearerOptions options)
-        {
-            var globalSettings = GlobalSettingsLoader.GetInstance();
-            var authService = globalSettings.GlobalSettings.Services.AuthService;
-            var clientUser = globalSettings.GlobalSettings.Users.ClientUser;
-
-            options.Authority = authService.URL;
-            options.RequireHttpsMetadata = true;
-
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-
-                ValidateIssuer = true,
-                ValidIssuer = authService.URL,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                IssuerSigningKey = _securityKeyService.Key,
-                ValidAudiences = [ authService.AudiencesAccess.Name ], 
-                ValidateIssuerSigningKey = true 
-            };
-        }
+        protected abstract void ConfigureAuthOptions(JwtBearerOptions options);
     }
 }

@@ -3,6 +3,7 @@ using CadoChat.Security.Authentication.Services.Interfaces;
 using CadoChat.Security.Validation.ConfigLoad;
 using CadoChat.Security.Validation.Services.Interfaces;
 using CadoChat.Web.Common.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -43,6 +44,11 @@ namespace CadoChat.APIGateway.Manager.Services
             RequireSignedTokens = true
         };
     });
+        }
+
+        protected override void ConfigureAuthOptions(JwtBearerOptions options)
+        {
+            throw new NotImplementedException();
         }
     }
 }

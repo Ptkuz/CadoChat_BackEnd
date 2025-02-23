@@ -22,6 +22,7 @@
     <ProjectReference Include="..\..\CadoChat.Security\CadoChat.Security.Cors\CadoChat.Security.Cors.csproj" />
     <ProjectReference Include="..\..\CadoChat.Security\CadoChat.Security.Validation\CadoChat.Security.Validation.csproj" />
     <ProjectReference Include="..\..\CadoChat.Web\CadoChat.Web.AspNetCore\CadoChat.Web.AspNetCore.csproj" />
+    <ProjectReference Include="..\CadoChat.ChatManager\CadoChat.ChatManager.csproj" />
   </ItemGroup>
 
 </Project>

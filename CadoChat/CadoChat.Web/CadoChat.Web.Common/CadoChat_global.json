@@ -4,7 +4,7 @@
 			"Name": "AuthService",
 			"URL": "https://localhost:7220",
 			"AudiencesAccess": {
-				"Name": "chat_api",
+				"Name": "auth_api",
 				"DisplayValue": "AuthService API"
 			}
 		},

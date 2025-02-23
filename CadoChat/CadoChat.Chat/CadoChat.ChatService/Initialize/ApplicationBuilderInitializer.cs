@@ -1,4 +1,5 @@
-﻿using CadoChat.IO.Json.Services.Interfaces;
+﻿using CadoChat.ChatManager.Services;
+using CadoChat.IO.Json.Services.Interfaces;
 using CadoChat.Security.APIGateway.Services;
 using CadoChat.Security.APIGateway.Services.Interfaces;
 using CadoChat.Security.Authentication.Services;
@@ -45,7 +46,7 @@ namespace CadoChat.ChatService.Initialize
             var configuration = _applicationBuilder.Configuration;
 
             _loggingConfigurationService = new LoggingConfigurationService();
-            _configurationAuthOptions = new ConfigurationAuthService(securityKeyService);
+            _configurationAuthOptions = new ConfigurationAuthManagerService(securityKeyService);
             _swaggerConfigurationService = new SwaggerConfigurationService();
             _corsConfigurationService = new CorsConfigurationService();
             _apiGatewayConfigurationService = new APIGatewayConfigurationService();

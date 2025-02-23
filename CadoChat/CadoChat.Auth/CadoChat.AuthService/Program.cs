@@ -31,7 +31,7 @@ var fileSerializer = serviceProvider.GetRequiredService<IFileSerializer>();
 var InitializedBuilder = ApplicationBuilderInitializer.CreateInstance(builder, securityKeyService, fileSerializer);
 
 var loggingService = InitializedBuilder.GetService<ILoggingConfigurationService>(typeof(ILoggingConfigurationService));
-var initAuthService = InitializedBuilder.GetService<IConfigurationAuthService>(typeof(IConfigurationAuthService));
+var authService = InitializedBuilder.GetService<IConfigurationAuthService>(typeof(IConfigurationAuthService));
 var swaggerService = InitializedBuilder.GetService<ISwaggerConfigurationService>(typeof(ISwaggerConfigurationService));
 var corsService = InitializedBuilder.GetService<ICorsConfigurationService>(typeof(ICorsConfigurationService));
 var apiGatewayService = InitializedBuilder.GetService<IAPIGatewayConfigurationService>(typeof(IAPIGatewayConfigurationService));
@@ -55,8 +55,7 @@ swaggerService.AddService(builder);
 // Добавляем IdentityServer
 identityServerService.AddService(builder);
 
-// Настройка аутентификации с использованием IdentityServer
-initAuthService.AddService(builder);
+authService.AddService(builder);
 
 
 services.AddControllers();
@@ -76,7 +75,7 @@ swaggerService.UseService(app);
 
 app.UseRouting();
 identityServerService.UseService(app);
-initAuthService.UseService(app);
+authService.UseService(app);
 app.UseAuthorization();
 app.MapControllers();
 

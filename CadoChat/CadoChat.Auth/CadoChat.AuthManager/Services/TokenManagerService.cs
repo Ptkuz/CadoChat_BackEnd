@@ -28,13 +28,16 @@ namespace CadoChat.AuthManager.Services
             var globalSettings = GlobalSettingsLoader.GetInstance();
 
             var authService = globalSettings.GlobalSettings.Services.AuthService;
+            var chatService = globalSettings.GlobalSettings.Services.ChatService;
+
             var clientUser = globalSettings.GlobalSettings.Users.ClientUser;
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenDescriptor = new SecurityTokenDescriptor
             {
+
                 Issuer = authService.URL,
-                Audience = string.Join(" ", authService.AudiencesAccess),
+                Audience = chatService.AudiencesAccess.Name,
                 Subject = new ClaimsIdentity(new[]
                 { 
                     new Claim("scope", AccessScopes.SendMessage.Key) 
@@ -42,6 +45,8 @@ namespace CadoChat.AuthManager.Services
                 Expires = DateTime.UtcNow.AddMinutes(clientUser.AccessTokenLifetime),
                 SigningCredentials = _securityKeyService.SigningCredentials
             };
+
+            //tokenDescriptor.Subject.AddClaim(new Claim("aud", chatService.AudiencesAccess.Name));
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var jwt = tokenHandler.WriteToken(token);
