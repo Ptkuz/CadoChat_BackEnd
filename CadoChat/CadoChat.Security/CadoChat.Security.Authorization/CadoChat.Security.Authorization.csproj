@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\CadoChat.Web\CadoChat.Web.Common\CadoChat.Web.Common.csproj" />
+    <ProjectReference Include="..\CadoChat.Security.Authentication\CadoChat.Security.Authentication.csproj" />
   </ItemGroup>
 
 </Project>

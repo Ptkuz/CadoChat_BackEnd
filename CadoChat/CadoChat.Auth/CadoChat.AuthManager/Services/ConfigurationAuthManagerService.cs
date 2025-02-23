@@ -22,9 +22,8 @@ namespace CadoChat.AuthManager.Services
 
         protected override void ConfigureAuthOptions(JwtBearerOptions options)
         {
-            var globalSettings = GlobalSettingsLoader.GetInstance();
-            var authService = globalSettings.GlobalSettings.Services.AuthService;
-            var clientUser = globalSettings.GlobalSettings.Users.ClientUser;
+            var authService = GlobalSettings.Services.AuthService;
+            var clientUser = GlobalSettings.Users.ClientUser;
 
             options.Authority = authService.URL;
             options.RequireHttpsMetadata = true;

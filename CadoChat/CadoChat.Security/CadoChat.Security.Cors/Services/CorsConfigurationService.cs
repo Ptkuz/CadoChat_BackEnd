@@ -1,27 +1,20 @@
 ﻿using CadoChat.Security.Common.Exceptions;
 using CadoChat.Security.Cors.Services.Interfaces;
+using CadoChat.Web.Common;
 using CadoChat.Web.Common.Services;
+using CadoChat.Web.Common.Settings;
 using CadoChat.Web.Common.Settings.Service.Base;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Runtime.InteropServices;
 
 namespace CadoChat.Security.Cors.Services
 {
-    public class CorsConfigurationService : ICorsConfigurationService
+    public class CorsConfigurationService : ConfigurationService, ICorsConfigurationService
     {
-        private ServiceConfig apiGateway = GlobalSettingsLoader.GetInstance().GlobalSettings.Services.API_Gateway;
         private string polilyName = "AllowGateway";
-
-        public CorsConfigurationService()
-        {
-
-            if (string.IsNullOrEmpty(apiGateway.URL))
-            {
-                throw new ApiGatewayURLNotFoundException();
-            }
-        }
 
         public void AddService(WebApplicationBuilder webApplicationBuilder)
         {
@@ -40,6 +33,9 @@ namespace CadoChat.Security.Cors.Services
 
         private void SetCorsPolicy(CorsPolicyBuilder corsPolicyBuilder)
         {
+
+            var apiGateway = GlobalSettings.Services.API_Gateway;
+
             corsPolicyBuilder.WithOrigins(apiGateway.URL)
                       .AllowAnyMethod()
                       .AllowAnyHeader();

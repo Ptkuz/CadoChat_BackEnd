@@ -1,4 +1,5 @@
 ﻿using CadoChat.Web.AspNetCore.Logging.Interfaces;
+using CadoChat.Web.Common;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CadoChat.Web.AspNetCore.Logging
 {
-    public class LoggingConfigurationService : ILoggingConfigurationService
+    public class LoggingConfigurationService : ConfigurationService, ILoggingConfigurationService
     {
         public void AddService(WebApplicationBuilder webApplicationBuilder)
         {

@@ -2,6 +2,7 @@
 using CadoChat.Security.Validation.ConfigLoad;
 using CadoChat.Security.Validation.SecutiryInfo;
 using CadoChat.Security.Validation.Services.Interfaces;
+using CadoChat.Web.Common;
 using CadoChat.Web.Common.Services;
 using CadoChat.Web.Common.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,7 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CadoChat.Security.Authentication.Services
 {
-    public abstract class ConfigurationAuthService : IConfigurationAuthService
+    public abstract class ConfigurationAuthService : ConfigurationService, IConfigurationAuthService
     {
 
         protected readonly ISecurityKeyService<RsaSecurityKey> _securityKeyService;

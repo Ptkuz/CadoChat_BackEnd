@@ -10,7 +10,6 @@ namespace CadoChat.Web.Common.Settings
 
         public ServiceObjects Services { get; set; }
         public string SecretKey { get; set; }
-        public Dictionary<string, string> Scopes { get; set; }
         public UserObjects Users { get; set; }
     }
 }

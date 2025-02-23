@@ -18,17 +18,15 @@ namespace CadoChat.APIGateway.Manager.Services
 
         public override void AddService(WebApplicationBuilder webApplicationBuilder)
         {
-
-            var authService = GlobalSettingsLoader.GetInstance().GlobalSettings.Services.AuthService;
-
-            webApplicationBuilder.Services.AddAuthentication(AuthenticationScheme)
-    .AddJwtBearer(AuthenticationScheme, ConfigureAuthOptions);
+            webApplicationBuilder.Services
+                .AddAuthentication(AuthenticationScheme)
+                .AddJwtBearer(AuthenticationScheme, ConfigureAuthOptions);
         }
 
         protected override void ConfigureAuthOptions(JwtBearerOptions options)
         {
 
-            var authService = GlobalSettingsLoader.GetInstance().GlobalSettings.Services.AuthService;
+            var authService = GlobalSettings.Services.AuthService;
 
             options.Authority = authService.URL;
             options.RequireHttpsMetadata = true;

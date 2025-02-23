@@ -2,13 +2,14 @@
 using CadoChat.AuthService.Services.Interfaces;
 using CadoChat.Security.Validation.SecutiryInfo;
 using CadoChat.Security.Validation.Services.Interfaces;
+using CadoChat.Web.Common;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CadoChat.Auth.IdentityServer.Services
 {
-    public class ConfigurationIdentityService : IConfigurationIdentityService
+    public class ConfigurationIdentityService : ConfigurationService, IConfigurationIdentityService
     {
 
         private readonly ISecurityKeyService<RsaSecurityKey> _securityKeyService;

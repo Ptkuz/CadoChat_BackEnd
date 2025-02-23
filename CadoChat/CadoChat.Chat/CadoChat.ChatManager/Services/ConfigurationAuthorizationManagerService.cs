@@ -15,7 +15,7 @@ namespace CadoChat.ChatManager.Services
         public override void AddService(WebApplicationBuilder webApplicationBuilder)
         {
 
-            var chatService = GlobalSettingsLoader.GetInstance().GlobalSettings.Services.ChatService;
+            var chatService = GlobalSettings.Services.ChatService;
 
             webApplicationBuilder.Services.AddAuthorization(options =>
             {

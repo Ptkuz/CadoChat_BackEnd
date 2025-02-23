@@ -1,4 +1,5 @@
 ﻿using CadoChat.Web.AspNetCore.Swagger.Interfaces;
+using CadoChat.Web.Common;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -7,7 +8,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace CadoChat.Web.AspNetCore.Swagger
 {
-    public class SwaggerConfigurationService : ISwaggerConfigurationService
+    public class SwaggerConfigurationService : ConfigurationService, ISwaggerConfigurationService
     {
 
         public virtual void AddService(WebApplicationBuilder webApplicationBuilder)
