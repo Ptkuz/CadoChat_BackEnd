@@ -16,9 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\security.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    <ProjectReference Include="..\..\CadoChat.Web\CadoChat.Web.Common\CadoChat.Web.Common.csproj" />
   </ItemGroup>
 
 </Project>

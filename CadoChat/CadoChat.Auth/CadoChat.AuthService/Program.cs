@@ -4,17 +4,33 @@ using CadoChat.AuthManager.Services.Interfaces;
 using CadoChat.AuthService;
 using CadoChat.AuthService.Initialize;
 using CadoChat.AuthService.Services.Interfaces;
+using CadoChat.IO.Json.Services;
+using CadoChat.IO.Json.Services.Interfaces;
 using CadoChat.Security.APIGateway.Services.Interfaces;
 using CadoChat.Security.Authentication.Services.Interfaces;
 using CadoChat.Security.Cors.Services.Interfaces;
 using CadoChat.Security.Validation.Services;
+using CadoChat.Security.Validation.Services.Interfaces;
 using CadoChat.Web.AspNetCore.Logging.Interfaces;
 using CadoChat.Web.AspNetCore.Swagger.Interfaces;
+using CadoChat.Web.Common.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
-var InitializedBuilder = ApplicationBuilderInitializer.CreateInstance(builder, RsaSecurityKeyService.GetInstance());
+builder.Services.AddSingleton<ISecurityKeyService<RsaSecurityKey>, RsaSecurityKeyService>();
+builder.Services.AddSingleton<IFileSerializer, FileSerializer>();
+
+
+using var serviceProvider = builder.Services.BuildServiceProvider();
+
+var securityKeyService = serviceProvider.GetRequiredService<ISecurityKeyService<RsaSecurityKey>>();
+var fileSerializer = serviceProvider.GetRequiredService<IFileSerializer>();
+
+var globalSettingsPath = builder.Configuration["GlobalSettingsPath"];
+
+var InitializedBuilder = ApplicationBuilderInitializer.CreateInstance(builder, securityKeyService, fileSerializer);
 
 var loggingService = InitializedBuilder.GetService<ILoggingConfigurationService>(typeof(ILoggingConfigurationService));
 var initAuthService = InitializedBuilder.GetService<IConfigurationAuthService>(typeof(IConfigurationAuthService));

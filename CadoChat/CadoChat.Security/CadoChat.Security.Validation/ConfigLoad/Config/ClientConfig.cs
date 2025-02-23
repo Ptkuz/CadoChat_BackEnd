@@ -1,5 +1,6 @@
 ﻿using CadoChat.Security.Validation.ConfigLoad.Config.Base;
 using CadoChat.Security.Validation.SecutiryInfo;
+using CadoChat.Web.Common.Services;
 
 namespace CadoChat.Security.Validation.ConfigLoad.Config
 {
@@ -11,7 +12,9 @@ namespace CadoChat.Security.Validation.ConfigLoad.Config
         public ClientConfig(int accessTokenLifetime)
             : base(accessTokenLifetime)
         {
-            Audiences = [AudiencesAccess.ChatApi];
+            //var globalSettings = GlobalSettingsLoader.GetInstance().GlobalSettings;
+
+            //Audiences = [globalSettings.];
         }
 
 

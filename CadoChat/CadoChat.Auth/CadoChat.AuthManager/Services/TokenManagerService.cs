@@ -3,6 +3,7 @@ using CadoChat.Security.Validation.ConfigLoad;
 using CadoChat.Security.Validation.SecutiryInfo;
 using CadoChat.Security.Validation.Services;
 using CadoChat.Security.Validation.Services.Interfaces;
+using CadoChat.Web.Common.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -14,30 +15,32 @@ namespace CadoChat.AuthManager.Services
     public class TokenManagerService : ITokenManagerService
     {
 
-        public TokenManagerService()
-        {
+        private readonly ISecurityKeyService<RsaSecurityKey> _securityKeyService;
 
+        public TokenManagerService(ISecurityKeyService<RsaSecurityKey> securityKeyService)
+        {
+            _securityKeyService = securityKeyService;
         }
 
         public string CreateAccessTokenAsync(IdentityUser user)
         {
 
-            var securityKey = RsaSecurityKeyService.GetInstance();
+            var globalSettings = GlobalSettingsLoader.GetInstance();
 
-            var authService = SecurityConfigLoader.SecurityConfig.AuthService;
-            var clientUser = SecurityConfigLoader.SecurityConfig.ClientUser;
+            var authService = globalSettings.GlobalSettings.Services.AuthService;
+            var clientUser = globalSettings.GlobalSettings.Users.ClientUser;
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Issuer = authService,
-                Audience = string.Join(" ", clientUser.Audiences),
+                Issuer = authService.URL,
+                Audience = string.Join(" ", authService.AudiencesAccess),
                 Subject = new ClaimsIdentity(new[]
                 { 
                     new Claim("scope", AccessScopes.SendMessage.Key) 
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(clientUser.AccessTokenLifetime),
-                SigningCredentials = securityKey.SigningCredentials
+                SigningCredentials = _securityKeyService.SigningCredentials
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);

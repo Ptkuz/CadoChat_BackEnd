@@ -1,19 +1,36 @@
 using CadoChat.AuthService.Initialize;
 using CadoChat.AuthService.Services.Interfaces;
+using CadoChat.IO.Json.Services;
+using CadoChat.IO.Json.Services.Interfaces;
 using CadoChat.Security.APIGateway.Services.Interfaces;
 using CadoChat.Security.Authentication.Middlewaers;
 using CadoChat.Security.Authentication.Services.Interfaces;
 using CadoChat.Security.Cors.Services.Interfaces;
 using CadoChat.Security.Validation.ConfigLoad;
 using CadoChat.Security.Validation.Services;
+using CadoChat.Security.Validation.Services.Interfaces;
+using CadoChat.Web.AspNetCore.Initialize.Interfaces;
 using CadoChat.Web.AspNetCore.Logging.Interfaces;
 using CadoChat.Web.AspNetCore.Swagger.Interfaces;
+using CadoChat.Web.Common.Services;
+using CadoChat.Web.Common.Services.Interfaces;
+using Microsoft.IdentityModel.Tokens;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var InitializedBuilder = ApplicationBuilderInitializer.CreateInstance(builder, RsaSecurityKeyService.GetInstance());
+builder.Services.AddSingleton<ISecurityKeyService<RsaSecurityKey>, RsaSecurityKeyService>();
+builder.Services.AddSingleton<IFileSerializer, FileSerializer>();
+
+
+using var serviceProvider = builder.Services.BuildServiceProvider();
+
+var securityKeyService = serviceProvider.GetRequiredService<ISecurityKeyService<RsaSecurityKey>>();
+var fileSerializer = serviceProvider.GetRequiredService<IFileSerializer>();
+
+var InitializedBuilder = ApplicationBuilderInitializer.CreateInstance(builder, securityKeyService, fileSerializer);
+
 
 var loggingService = InitializedBuilder.GetService<ILoggingConfigurationService>(typeof(ILoggingConfigurationService));
 var authApiGatewayService = InitializedBuilder.GetService<IConfigurationAuthService>(typeof(IConfigurationAuthService));
@@ -23,8 +40,6 @@ var apiGatewayService = InitializedBuilder.GetService<IAPIGatewayConfigurationSe
 var identityServerService = InitializedBuilder.GetService<IConfigurationIdentityService>(typeof(IConfigurationIdentityService));
 
 builder.Services.AddRouting();
-
-SecurityConfigLoader.Init(builder.Configuration);
 
 var apiGateway = builder.Configuration["ServiceUrls:API_Gateway"]!;
 

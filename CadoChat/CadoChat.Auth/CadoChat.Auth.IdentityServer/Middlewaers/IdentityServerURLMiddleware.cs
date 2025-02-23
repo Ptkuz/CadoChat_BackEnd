@@ -1,5 +1,6 @@
 ﻿using CadoChat.Security.Authentication.Middlewaers;
 using CadoChat.Security.Validation.ConfigLoad;
+using CadoChat.Web.Common.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -18,12 +19,13 @@ namespace CadoChat.Auth.IdentityServer.Middlewaers
 
         public async Task Invoke(HttpContext context)
         {
-            var authService = SecurityConfigLoader.SecurityConfig.AuthService;
+
+            var authService = GlobalSettingsLoader.GetInstance().GlobalSettings.Services.AuthService;
 
             // Проверка заголовка X-Forwarded-For, добавленного API Gateway
             var host = context.Request.Headers["Host"].ToString();
 
-            if ((string.IsNullOrEmpty(host) || authService.Contains(host))
+            if ((string.IsNullOrEmpty(host) || authService.URL.Contains(host))
             && (!context.Request.Path.HasValue && context.Request.Path.Value != "/.well-known/openid-configuration"))
             {
 

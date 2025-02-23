@@ -10,7 +10,7 @@ namespace CadoChat.Security.Validation.ConfigLoad.Config
         public AdminConfig(int accessTokenLifetime)
             : base(accessTokenLifetime)
         {
-            Audiences = [AudiencesAccess.AuthApi, AudiencesAccess.ChatApi, AudiencesAccess.AdminApi];
+            //Audiences = [AudiencesAccess.AuthApi, AudiencesAccess.ChatApi, AudiencesAccess.AdminApi];
         }
     }
 }

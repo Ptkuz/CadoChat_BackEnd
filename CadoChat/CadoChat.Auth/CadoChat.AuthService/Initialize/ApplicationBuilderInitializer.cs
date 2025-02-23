@@ -1,6 +1,7 @@
 ﻿using CadoChat.Auth.IdentityServer.Services;
 using CadoChat.AuthService.Services;
 using CadoChat.AuthService.Services.Interfaces;
+using CadoChat.IO.Json.Services.Interfaces;
 using CadoChat.Security.APIGateway.Services;
 using CadoChat.Security.APIGateway.Services.Interfaces;
 using CadoChat.Security.Authentication.Services;
@@ -14,6 +15,7 @@ using CadoChat.Web.AspNetCore.Logging;
 using CadoChat.Web.AspNetCore.Logging.Interfaces;
 using CadoChat.Web.AspNetCore.Swagger;
 using CadoChat.Web.AspNetCore.Swagger.Interfaces;
+using CadoChat.Web.Common.Services;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CadoChat.AuthService.Initialize
@@ -31,10 +33,13 @@ namespace CadoChat.AuthService.Initialize
         private readonly WebApplicationBuilder _applicationBuilder;
 
         private ApplicationBuilderInitializer(WebApplicationBuilder applicationBuilder,
-            ISecurityKeyService<RsaSecurityKey>? securityKeyService)
+            ISecurityKeyService<RsaSecurityKey>? securityKeyService, IFileSerializer fileSerializer)
         {
 
-            SecurityConfigLoader.Init(applicationBuilder.Configuration);
+            var globalSettingsPath = applicationBuilder.Configuration["GlobalSettingsPath"];
+
+            GlobalSettingsLoader.GetInstance(globalSettingsPath, fileSerializer);
+
             applicationBuilder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
             _applicationBuilder = applicationBuilder;
@@ -49,10 +54,11 @@ namespace CadoChat.AuthService.Initialize
             _configurationIdentityService = new ConfigurationIdentityService(securityKeyService);
         }
 
-        public static IApplicationBuilderInitializer CreateInstance(WebApplicationBuilder applicationBuilder, ISecurityKeyService<RsaSecurityKey>? securityKeyService)
+        public static IApplicationBuilderInitializer CreateInstance(WebApplicationBuilder applicationBuilder, 
+            ISecurityKeyService<RsaSecurityKey>? securityKeyService, IFileSerializer fileSerializer)
         {
 
-            var instance = new ApplicationBuilderInitializer(applicationBuilder, securityKeyService);
+            var instance = new ApplicationBuilderInitializer(applicationBuilder, securityKeyService, fileSerializer);
             return instance;
         }
 

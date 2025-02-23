@@ -7,7 +7,27 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="CadoChat_global.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CadoChat.IO\CadoChat.IO.Json\CadoChat.IO.Json.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="CadoChat_global.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Settings\User\UserObjects.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Compile>
   </ItemGroup>
 
 </Project>

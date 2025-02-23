@@ -1,5 +1,7 @@
 ﻿using CadoChat.Security.Validation.ConfigLoad;
 using CadoChat.Security.Validation.Services.Interfaces;
+using CadoChat.Web.Common.Services;
+using CadoChat.Web.Common.Settings;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -44,33 +46,20 @@ namespace CadoChat.Security.Validation.Services
             }
         }
 
-        private RsaSecurityKeyService()
+        public RsaSecurityKeyService()
         {
 
-        }
-
-        private static ISecurityKeyService<RsaSecurityKey>? instance;
-
-        public static ISecurityKeyService<RsaSecurityKey> GetInstance()
-        {
-
-            if (instance == null)
-            {
-                instance = new RsaSecurityKeyService();
-            }
-
-            return instance;
         }
 
         private RsaSecurityKey GetKey()
         {
-            var privateKey = SecurityConfigLoader.SecurityConfig._privateKey;
+            var globalSettins = GlobalSettingsLoader.GetInstance().GlobalSettings;
 
             var rsa = RSA.Create(2048);
-            rsa.ImportRSAPrivateKey(Convert.FromBase64String(privateKey), out _);
+            rsa.ImportRSAPrivateKey(Convert.FromBase64String(globalSettins._privateKey), out _);
             var signingKey = new RsaSecurityKey(rsa)
             {
-                KeyId = SecurityConfigLoader.SecurityConfig.SecretKey,
+                KeyId = globalSettins.SecretKey,
             };
 
             return signingKey;

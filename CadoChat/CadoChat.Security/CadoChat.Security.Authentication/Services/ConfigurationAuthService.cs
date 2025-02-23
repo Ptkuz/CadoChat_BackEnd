@@ -2,6 +2,8 @@
 using CadoChat.Security.Validation.ConfigLoad;
 using CadoChat.Security.Validation.SecutiryInfo;
 using CadoChat.Security.Validation.Services.Interfaces;
+using CadoChat.Web.Common.Services;
+using CadoChat.Web.Common.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,19 +38,22 @@ namespace CadoChat.Security.Authentication.Services
 
         private void ConfigureAuthOptions(JwtBearerOptions options)
         {
-            var authService = SecurityConfigLoader.SecurityConfig.AuthService;
-            options.Authority = authService;
+            var globalSettings = GlobalSettingsLoader.GetInstance();
+            var authService = globalSettings.GlobalSettings.Services.AuthService;
+            var clientUser = globalSettings.GlobalSettings.Users.ClientUser;
+
+            options.Authority = authService.URL;
             options.RequireHttpsMetadata = true;
 
             options.TokenValidationParameters = new TokenValidationParameters
             {
 
                 ValidateIssuer = true,
-                ValidIssuer = authService,
+                ValidIssuer = authService.URL,
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 IssuerSigningKey = _securityKeyService.Key,
-                ValidAudience = AudiencesAccess.ChatApi, 
+                ValidAudience = authService.AudiencesAccess, 
                 ValidateIssuerSigningKey = true 
             };
         }

@@ -1,0 +1,35 @@
+{
+	"Services": {
+		"AuthService": {
+			"Name": "AuthService",
+			"URL": "https://localhost:7220",
+			"AudiencesAccess":  "auth_api"
+		},
+		"ChatService": {
+			"Name": "ChatService",
+			"URL": "https://localhost:7167",
+			"AudiencesAccess": "chat_api"
+		},
+		"API_Gateway": {
+			"Name": "API_Gateway",
+			"URL": "https://localhost:5000"
+		}
+	},
+	"SecretKey": "supersecretkey1234564564564756757665756",
+	"scopes": {
+		"SendMessage": "Send message",
+		"ReceiveMessage": "Receive message"
+	},
+	"Users": {
+		"ClientUser": {
+			"Id": "client_id",
+			"AccessTokenLifetime": 600,
+			"RequireClientSecret":  false
+		},
+		"AdminUser": {
+			"Id": "admin_id",
+			"AccessTokenLifetime": 600,
+			"RequireClientSecret": false
+		}
+	}
+}

@@ -1,4 +1,5 @@
-﻿using CadoChat.Security.APIGateway.Services;
+﻿using CadoChat.IO.Json.Services.Interfaces;
+using CadoChat.Security.APIGateway.Services;
 using CadoChat.Security.APIGateway.Services.Interfaces;
 using CadoChat.Security.Authentication.Services;
 using CadoChat.Security.Authentication.Services.Interfaces;
@@ -11,6 +12,7 @@ using CadoChat.Web.AspNetCore.Logging;
 using CadoChat.Web.AspNetCore.Logging.Interfaces;
 using CadoChat.Web.AspNetCore.Swagger;
 using CadoChat.Web.AspNetCore.Swagger.Interfaces;
+using CadoChat.Web.Common.Services;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CadoChat.ChatService.Initialize
@@ -26,10 +28,16 @@ namespace CadoChat.ChatService.Initialize
 
         private readonly WebApplicationBuilder _applicationBuilder;
 
-        private ApplicationBuilderInitializer(WebApplicationBuilder applicationBuilder, ISecurityKeyService<RsaSecurityKey> securityKeyService)
+        private ApplicationBuilderInitializer(WebApplicationBuilder applicationBuilder, 
+            ISecurityKeyService<RsaSecurityKey> securityKeyService, IFileSerializer fileSerializer)
         {
 
-            SecurityConfigLoader.Init(applicationBuilder.Configuration);
+            var globalSettingsPath = applicationBuilder.Configuration["GlobalSettingsPath"];
+
+            var globalSettings = GlobalSettingsLoader.GetInstance(globalSettingsPath, fileSerializer);
+            var authService = globalSettings.GlobalSettings.Services.AuthService;
+            var clientUser = globalSettings.GlobalSettings.Users.ClientUser;
+
             applicationBuilder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
             _applicationBuilder = applicationBuilder;
@@ -43,10 +51,11 @@ namespace CadoChat.ChatService.Initialize
             _apiGatewayConfigurationService = new APIGatewayConfigurationService();
         }
 
-        public static IApplicationBuilderInitializer CreateInstance(WebApplicationBuilder applicationBuilder, ISecurityKeyService<RsaSecurityKey> securityKeyService)
+        public static IApplicationBuilderInitializer CreateInstance(WebApplicationBuilder applicationBuilder, 
+            ISecurityKeyService<RsaSecurityKey> securityKeyService, IFileSerializer fileSerializer)
         {
 
-            var instance = new ApplicationBuilderInitializer(applicationBuilder, securityKeyService);
+            var instance = new ApplicationBuilderInitializer(applicationBuilder, securityKeyService, fileSerializer);
             return instance;
         }
 

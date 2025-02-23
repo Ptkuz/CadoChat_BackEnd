@@ -1,6 +1,7 @@
 ﻿using CadoChat.Security.Validation.ConfigLoad;
 using CadoChat.Security.Validation.ConfigLoad.Config;
 using CadoChat.Security.Validation.SecutiryInfo.Interfaces;
+using CadoChat.Web.Common.Services;
 using Duende.IdentityServer.Models;
 using System;
 using System.Collections.Generic;
@@ -26,11 +27,14 @@ namespace CadoChat.Security.Validation.SecutiryInfo
 
         public ClientUser()
         {
-            Id = "client_id";
+
+            var clientUser = GlobalSettingsLoader.GetInstance().GlobalSettings.Users.ClientUser;
+
+            Id = clientUser.Id;
             Scopes = [AccessScopes.SendMessage.Key];
-            AccessTokenLifetime = SecurityConfigLoader.SecurityConfig.ClientUser.AccessTokenLifetime;
+            AccessTokenLifetime = clientUser.AccessTokenLifetime;
             AllowedGrantTypes = GrantTypes.ClientCredentials;
-            RequireClientSecret = false;
+            RequireClientSecret = clientUser.RequireClientSecret;
         }
     }
 }

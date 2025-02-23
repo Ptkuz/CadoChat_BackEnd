@@ -2,6 +2,7 @@
 using CadoChat.Security.Authentication.Services.Interfaces;
 using CadoChat.Security.Validation.ConfigLoad;
 using CadoChat.Security.Validation.Services.Interfaces;
+using CadoChat.Web.Common.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -23,19 +24,19 @@ namespace CadoChat.APIGateway.Manager.Services
         public override void AddService(WebApplicationBuilder webApplicationBuilder)
         {
 
-            var authService = SecurityConfigLoader.SecurityConfig.AuthService;
+            var authService = GlobalSettingsLoader.GetInstance().GlobalSettings.Services.AuthService;
 
             webApplicationBuilder.Services.AddAuthentication(AuthenticationScheme)
     .AddJwtBearer(AuthenticationScheme, options =>
     {
-        options.Authority = authService;
+        options.Authority = authService.URL;
         options.RequireHttpsMetadata = true;
 
         options.TokenValidationParameters = new TokenValidationParameters
         {
 
             ValidateIssuer = true,
-            ValidIssuer = authService,
+            ValidIssuer = authService.URL,
             ValidateAudience = false,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
