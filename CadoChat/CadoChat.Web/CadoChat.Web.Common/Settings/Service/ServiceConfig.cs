@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CadoChat.Web.Common.Settings.Service.Audience;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,8 @@ namespace CadoChat.Web.Common.Settings.Service
     {
         public string Name { get; set; }
         public string URL { get; set; }
-        public string AudiencesAccess { get; set; }
+        public AudiencesAccess AudiencesAccess { get; set; }
+        public Dictionary<string, string> Scopes { get; set; } = new Dictionary<string, string>();
 
     }
 }

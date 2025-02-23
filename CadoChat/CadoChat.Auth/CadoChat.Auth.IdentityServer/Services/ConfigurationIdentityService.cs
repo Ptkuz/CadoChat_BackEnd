@@ -22,11 +22,11 @@ namespace CadoChat.Auth.IdentityServer.Services
         {
             webApplicationBuilder.Services.AddIdentityServer(options =>
             {
-                options.KeyManagement.Enabled = false; // 
+                options.KeyManagement.Enabled = false; 
             })
             .AddSigningCredential(_securityKeyService.SigningCredentials)
-            .AddInMemoryClients(IdentityServerConfig.Clients)
-            .AddInMemoryApiScopes(IdentityServerConfig.ApiScopes)
+            .AddInMemoryClients(IdentityServerConfig.GetClients())
+            .AddInMemoryApiScopes(IdentityServerConfig.ApiScopes())
             .AddInMemoryIdentityResources(IdentityServerConfig.IdentityResources)
     ;
         }

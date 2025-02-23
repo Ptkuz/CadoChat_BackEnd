@@ -6,14 +6,10 @@ using CadoChat.Security.APIGateway.Services.Interfaces;
 using CadoChat.Security.Authentication.Middlewaers;
 using CadoChat.Security.Authentication.Services.Interfaces;
 using CadoChat.Security.Cors.Services.Interfaces;
-using CadoChat.Security.Validation.ConfigLoad;
 using CadoChat.Security.Validation.Services;
 using CadoChat.Security.Validation.Services.Interfaces;
-using CadoChat.Web.AspNetCore.Initialize.Interfaces;
 using CadoChat.Web.AspNetCore.Logging.Interfaces;
 using CadoChat.Web.AspNetCore.Swagger.Interfaces;
-using CadoChat.Web.Common.Services;
-using CadoChat.Web.Common.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
@@ -40,8 +36,6 @@ var apiGatewayService = InitializedBuilder.GetService<IAPIGatewayConfigurationSe
 var identityServerService = InitializedBuilder.GetService<IConfigurationIdentityService>(typeof(IConfigurationIdentityService));
 
 builder.Services.AddRouting();
-
-var apiGateway = builder.Configuration["ServiceUrls:API_Gateway"]!;
 
 authApiGatewayService.AddService(builder);
 

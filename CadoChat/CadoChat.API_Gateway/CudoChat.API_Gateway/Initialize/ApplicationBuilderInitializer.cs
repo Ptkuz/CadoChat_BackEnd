@@ -52,7 +52,7 @@ namespace CadoChat.AuthService.Initialize
             _loggingConfigurationService = new LoggingConfigurationService();
             _configurationAuthOptions = new ConfigurationAuthAPIGatewayService(securityKeyService);
             _swaggerConfigurationService = new ConfigurationSwaggerAPIGatewayService();
-            _corsConfigurationService = new CorsConfigurationService(configuration);
+            _corsConfigurationService = new CorsConfigurationService();
             _apiGatewayConfigurationService = new APIGatewayConfigurationService();
             _configurationIdentityService = new ConfigurationIdentityService(securityKeyService);
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CadoChat.Web.Common.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -19,10 +20,11 @@ namespace CadoChat.Security.Authentication.Middlewaers
 
         public async Task Invoke(HttpContext context)
         {
-            var requestHost = context.Request.Host.Value;
-            var apiGateway = _configuration["ServiceUrls:API_Gateway"]!;
+            var apiGateway = GlobalSettingsLoader.GetInstance().GlobalSettings.Services.API_Gateway;
 
-            if (string.IsNullOrEmpty(requestHost) || !apiGateway.Contains(requestHost))
+            var requestHost = context.Request.Host.Value;
+
+            if (string.IsNullOrEmpty(requestHost) || !apiGateway.URL.Contains(requestHost))
             {
                 context.Response.StatusCode = 403;
                 await context.Response.WriteAsync("Forbidden: Access only through API Gateway.");

@@ -53,7 +53,7 @@ namespace CadoChat.Security.Authentication.Services
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 IssuerSigningKey = _securityKeyService.Key,
-                ValidAudience = authService.AudiencesAccess, 
+                ValidAudiences = [ authService.AudiencesAccess.Name ], 
                 ValidateIssuerSigningKey = true 
             };
         }
