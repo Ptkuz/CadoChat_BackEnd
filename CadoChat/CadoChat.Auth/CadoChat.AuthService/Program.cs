@@ -8,6 +8,7 @@ using CadoChat.IO.Json.Services;
 using CadoChat.IO.Json.Services.Interfaces;
 using CadoChat.Security.APIGateway.Services.Interfaces;
 using CadoChat.Security.Authentication.Services.Interfaces;
+using CadoChat.Security.Authorization.Services.Interfaces;
 using CadoChat.Security.Cors.Services.Interfaces;
 using CadoChat.Security.Validation.Services;
 using CadoChat.Security.Validation.Services.Interfaces;
@@ -34,7 +35,7 @@ var authService = InitializedBuilder.GetService<IAuthConfiguration>(typeof(IAuth
 var swaggerService = InitializedBuilder.GetService<ISwaggerConfiguration>(typeof(ISwaggerConfiguration));
 var corsService = InitializedBuilder.GetService<ICorsConfiguration>(typeof(ICorsConfiguration));
 var identityServerService = InitializedBuilder.GetService<IIdentityServiceConfiguration>(typeof(IIdentityServiceConfiguration));
-
+var authorizationService = InitializedBuilder.GetService<IAuthorizationConfiguration>(typeof(IAuthorizationConfiguration));
 var apiGatewayService = InitializedBuilder.GetService<IAPIGatewayConfiguration>(typeof(IAPIGatewayConfiguration));
 
 var services = builder.Services;
@@ -56,7 +57,7 @@ swaggerService.AddService(builder);
 identityServerService.AddService(builder);
 
 authService.AddService(builder);
-
+authorizationService.AddService(builder);
 
 services.AddControllers();
 
@@ -75,7 +76,7 @@ swaggerService.UseService(app);
 app.UseRouting();
 identityServerService.UseService(app);
 authService.UseService(app);
-app.UseAuthorization();
+authorizationService.UseService(app);
 app.MapControllers();
 
 app.Run();

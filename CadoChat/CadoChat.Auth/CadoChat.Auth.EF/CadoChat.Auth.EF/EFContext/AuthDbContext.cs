@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using CadoChat.Auth.EF.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,13 +13,28 @@ namespace CadoChat.AuthService
         {
             base.OnModelCreating(builder);
 
-            // Создание ролей при миграции
+            RenameTables(builder);
+            InitData(builder);
+
+        }
+
+        private void RenameTables(ModelBuilder builder)
+        {
+            builder.Entity<User>().ToTable("Users");
+            builder.Entity<Role>().ToTable("Roles");
+            builder.Entity<UserRole>().ToTable("UserRoles");
+            builder.Entity<UserClaim>().ToTable("UserClaims");
+            builder.Entity<UserLogin>().ToTable("UserLogins");
+            builder.Entity<RoleClaim>().ToTable("RoleClaims");
+            builder.Entity<UserToken>().ToTable("UserTokens");
+        }
+
+        private void InitData(ModelBuilder builder)
+        {
             builder.Entity<IdentityRole>().HasData(
                 new IdentityRole { Id = "e7b8bc1c-9474-4202-b565-f75f1d734d01", Name = "Admin", NormalizedName = "ADMIN" },
                 new IdentityRole { Id = "945e5c4f-9d07-4594-abe6-a7529057e3f0", Name = "User", NormalizedName = "USER" }
-            );
-
-
+);
         }
     }
 }
