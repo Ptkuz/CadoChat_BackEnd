@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace CadoChat.AuthManager.Services
 {
-    public class TokenManagerService : ITokenManagerService
+    public class TokenManagerService<TUser> : ITokenManagerService<TUser> where TUser : IdentityUser<Guid>
     {
 
         private readonly ISecurityKeyService<RsaSecurityKey> _securityKeyService;
@@ -18,7 +18,7 @@ namespace CadoChat.AuthManager.Services
             _securityKeyService = securityKeyService;
         }
 
-        public string CreateAccessTokenAsync(IdentityUser user)
+        public string CreateAccessTokenAsync(TUser user)
         {
 
             var globalSettings = GlobalSettingsLoader.Instance;

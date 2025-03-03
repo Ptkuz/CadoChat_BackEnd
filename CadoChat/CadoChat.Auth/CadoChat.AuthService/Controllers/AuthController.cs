@@ -1,4 +1,5 @@
 ﻿using CadoChat.AuthManager.Services.Interfaces;
+using CadoChat.AuthService.Entities;
 using CadoChat.AuthService.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -7,11 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly SignInManager<IdentityUser> _signInManager;
-    private readonly ITokenManagerService _tokenManagerService;
+    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
+    private readonly ITokenManagerService<User> _tokenManagerService;
 
-    public AuthController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ITokenManagerService tokenManagerService)
+    public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, ITokenManagerService<User> tokenManagerService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -32,7 +33,7 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
-        var user = new IdentityUser { UserName = model.Username, Email = model.Email };
+        var user = new User { UserName = model.Username, Email = model.Email };
         var result = await _userManager.CreateAsync(user, model.Password);
 
         if (!result.Succeeded)

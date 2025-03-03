@@ -1,7 +1,8 @@
 using CadoChat.Auth.IdentityServer.Middlewaers;
 using CadoChat.AuthManager.Services;
 using CadoChat.AuthManager.Services.Interfaces;
-using CadoChat.AuthService;
+using CadoChat.AuthService.DI;
+using CadoChat.AuthService.Entities;
 using CadoChat.AuthService.Initialize;
 using CadoChat.AuthService.Services.Interfaces;
 using CadoChat.IO.Json.Services;
@@ -14,8 +15,6 @@ using CadoChat.Security.Validation.Services;
 using CadoChat.Security.Validation.Services.Interfaces;
 using CadoChat.Web.AspNetCore.Logging.Interfaces;
 using CadoChat.Web.AspNetCore.Swagger.Interfaces;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,16 +39,13 @@ var apiGatewayService = InitializedBuilder.GetService<IAPIGatewayConfiguration>(
 
 var services = builder.Services;
 
-builder.Services.AddTransient<ITokenManagerService, TokenManagerService>();
+builder.Services.AddTransient<ITokenManagerService<User>, TokenManagerService<User>>();
 
 // Настройка базы данных
-services.AddDbContext<AuthDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+services.AddDBContext(builder);
 
 // Настройка Identity
-services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<AuthDbContext>()
-    .AddDefaultTokenProviders();
+services.AddEFServices();
 
 swaggerService.AddService(builder);
 

@@ -2,10 +2,10 @@
 
 namespace CadoChat.AuthManager.Services.Interfaces
 {
-    public interface ITokenManagerService
+    public interface ITokenManagerService<TUser> where TUser : IdentityUser<Guid>
     {
 
-        string CreateAccessTokenAsync(IdentityUser user);
+        string CreateAccessTokenAsync(TUser user);
 
     }
 }

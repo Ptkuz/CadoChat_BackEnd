@@ -1,11 +1,10 @@
-﻿using CadoChat.Auth.EF.Entities;
-using Microsoft.AspNetCore.Identity;
+﻿using CadoChat.AuthService.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace CadoChat.AuthService
+namespace CadoChat.AuthService.AuthService
 {
-    public class AuthDbContext : IdentityDbContext<IdentityUser>
+    public class AuthDbContext : IdentityDbContext<User, Role, Guid>
     {
         public AuthDbContext(DbContextOptions<AuthDbContext> options) : base(options) { }
 
@@ -31,9 +30,9 @@ namespace CadoChat.AuthService
 
         private void InitData(ModelBuilder builder)
         {
-            builder.Entity<IdentityRole>().HasData(
-                new IdentityRole { Id = "e7b8bc1c-9474-4202-b565-f75f1d734d01", Name = "Admin", NormalizedName = "ADMIN" },
-                new IdentityRole { Id = "945e5c4f-9d07-4594-abe6-a7529057e3f0", Name = "User", NormalizedName = "USER" }
+            builder.Entity<Role>().HasData(
+                new Role { Id = new Guid("e7b8bc1c-9474-4202-b565-f75f1d734d01"), Name = "Admin", NormalizedName = "ADMIN" },
+                new Role { Id = new Guid("945e5c4f-9d07-4594-abe6-a7529057e3f0"), Name = "User", NormalizedName = "USER" }
 );
         }
     }

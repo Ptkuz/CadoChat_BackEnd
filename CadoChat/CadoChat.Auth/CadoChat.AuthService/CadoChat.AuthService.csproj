@@ -14,8 +14,12 @@
     <PackageReference Include="Duende.IdentityServer.EntityFramework" Version="7.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.3" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
   </ItemGroup>
 
@@ -26,7 +30,6 @@
     <ProjectReference Include="..\..\CadoChat.Security\CadoChat.Security.Common\CadoChat.Security.Common.csproj" />
     <ProjectReference Include="..\..\CadoChat.Security\CadoChat.Security.Cors\CadoChat.Security.Cors.csproj" />
     <ProjectReference Include="..\..\CadoChat.Web\CadoChat.Web.Common\CadoChat.Web.Common.csproj" />
-    <ProjectReference Include="..\CadoChat.Auth.EF\CadoChat.Auth.EF\CadoChat.Auth.EF.csproj" />
     <ProjectReference Include="..\CadoChat.Auth.IdentityServer\CadoChat.Auth.IdentityServer.csproj" />
     <ProjectReference Include="..\CadoChat.AuthManager\CadoChat.AuthManager.csproj" />
   </ItemGroup>
