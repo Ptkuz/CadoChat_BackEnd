@@ -1,14 +1,14 @@
 ﻿using CadoChat.AuthManager.Services.Interfaces;
+using CadoChat.DAL.Entity.BaseEntity;
 using CadoChat.Security.Validation.Services.Interfaces;
 using CadoChat.Web.Common.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace CadoChat.AuthManager.Services
 {
-    public class TokenManagerService<TUser> : ITokenManagerService<TUser> where TUser : IdentityUser<Guid>
+    public class TokenManagerService<TUser> : ITokenManagerService<TUser> where TUser : IEntity
     {
 
         private readonly ISecurityKeyService<RsaSecurityKey> _securityKeyService;

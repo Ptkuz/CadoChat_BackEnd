@@ -1,6 +1,9 @@
-﻿using CadoChat.AuthManager.Services.Interfaces;
-using CadoChat.AuthService.Entities;
+﻿using CadoChat.Auth.EF;
+using CadoChat.Auth.EF.Entities;
+using CadoChat.AuthManager.Services.Interfaces;
 using CadoChat.AuthService.Models;
+using CadoChat.DAL.EF.FacadeRepository;
+using CadoChat.DAL.Entity.FacadeRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,12 +14,14 @@ public class AuthController : ControllerBase
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
     private readonly ITokenManagerService<User> _tokenManagerService;
+    private readonly IAuthUnifOfWork _authUnifOfWork;
 
-    public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, ITokenManagerService<User> tokenManagerService)
+    public AuthController(ITokenManagerService<User> tokenManagerService, IAuthUnifOfWork authUnifOfWork)
     {
-        _userManager = userManager;
-        _signInManager = signInManager;
+        _userManager = null;
+        _signInManager = null;
         _tokenManagerService = tokenManagerService;
+        _authUnifOfWork = authUnifOfWork;
     }
 
     [HttpPost("login")]
@@ -33,7 +38,15 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
-        var user = new User { UserName = model.Username, Email = model.Email };
+
+        var res = await _authUnifOfWork.UserRepository.CreateRepository.AddEntityAsync(new User { Username = model.Username, Email = model.Email, PasswordHash = "23432432432" });
+
+        if (res.Success)
+        {
+            await _authUnifOfWork.SaveChangesAsync();
+        }
+
+        var user = new User { Username = model.Username, Email = model.Email };
         var result = await _userManager.CreateAsync(user, model.Password);
 
         if (!result.Succeeded)

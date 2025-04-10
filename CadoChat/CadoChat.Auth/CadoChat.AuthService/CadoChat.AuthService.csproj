@@ -24,12 +24,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\CadoChat.DAL\CadoChat.DAL.EF\CadoChat.DAL.EF\CadoChat.DAL.EF.csproj" />
     <ProjectReference Include="..\..\CadoChat.Security\CadoChat.Security.APIGateway\CadoChat.Security.APIGateway.csproj" />
     <ProjectReference Include="..\..\CadoChat.Security\CadoChat.Security.Authentication\CadoChat.Security.Authentication.csproj" />
     <ProjectReference Include="..\..\CadoChat.Security\CadoChat.Security.Authorization\CadoChat.Security.Authorization.csproj" />
     <ProjectReference Include="..\..\CadoChat.Security\CadoChat.Security.Common\CadoChat.Security.Common.csproj" />
     <ProjectReference Include="..\..\CadoChat.Security\CadoChat.Security.Cors\CadoChat.Security.Cors.csproj" />
     <ProjectReference Include="..\..\CadoChat.Web\CadoChat.Web.Common\CadoChat.Web.Common.csproj" />
+    <ProjectReference Include="..\CadoChat.Auth.EF\CadoChat.Auth.EF.csproj" />
     <ProjectReference Include="..\CadoChat.Auth.IdentityServer\CadoChat.Auth.IdentityServer.csproj" />
     <ProjectReference Include="..\CadoChat.AuthManager\CadoChat.AuthManager.csproj" />
   </ItemGroup>

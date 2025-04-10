@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\CadoChat.DAL\CadoChat.DAL.Entity\CadoChat.DAL.Entity.csproj" />
     <ProjectReference Include="..\..\CadoChat.Security\CadoChat.Security.Authentication\CadoChat.Security.Authentication.csproj" />
     <ProjectReference Include="..\..\CadoChat.Security\CadoChat.Security.Validation\CadoChat.Security.Validation.csproj" />
   </ItemGroup>

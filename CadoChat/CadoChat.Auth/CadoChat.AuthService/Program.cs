@@ -1,8 +1,8 @@
+using CadoChat.Auth.EF.Entities;
 using CadoChat.Auth.IdentityServer.Middlewaers;
 using CadoChat.AuthManager.Services;
 using CadoChat.AuthManager.Services.Interfaces;
 using CadoChat.AuthService.DI;
-using CadoChat.AuthService.Entities;
 using CadoChat.AuthService.Initialize;
 using CadoChat.AuthService.Services.Interfaces;
 using CadoChat.IO.Json.Services;
@@ -44,9 +44,6 @@ builder.Services.AddTransient<ITokenManagerService<User>, TokenManagerService<Us
 // Настройка базы данных
 services.AddDBContext(builder);
 
-// Настройка Identity
-services.AddEFServices();
-
 swaggerService.AddService(builder);
 
 // Добавляем IdentityServer
@@ -58,6 +55,9 @@ authorizationService.AddService(builder);
 services.AddControllers();
 
 corsService.AddService(builder);
+services.AddAuthRepositories();
+services.AddAuthFacadeRepositories();
+services.AddAuthUnitOfWork();
 
 var app = builder.Build();
 

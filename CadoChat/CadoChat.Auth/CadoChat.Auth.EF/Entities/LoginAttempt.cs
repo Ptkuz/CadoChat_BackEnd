@@ -2,16 +2,18 @@
 
 namespace CadoChat.Auth.EF.Entities
 {
-    public class UserRole : Entity
+    public class LoginAttempt : Entity
     {
+
         public Guid UserId { get; set; }
-        public Guid RoleId { get; set; }
+        public DateTime AttemptTime { get; set; }
+        public bool IsSuccessful { get; set; }
 
         public User? User { get; set; }
-        public Role? Role { get; set; }
 
-        public UserRole()
+        public LoginAttempt()
         {
+
         }
     }
 }

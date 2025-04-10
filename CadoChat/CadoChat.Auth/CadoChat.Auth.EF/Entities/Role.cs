@@ -1,14 +1,29 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CadoChat.DAL.Entity.BaseEntity;
 
 namespace CadoChat.Auth.EF.Entities
 {
-    public class Role : IdentityRole<Guid>
+    public class Role : Entity
     {
 
+        private string name = null!;
+
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
+            set
+            {
+                name = value;
+            }
+        }
+
+        public ICollection<UserRole> UserRoles { get; set; }
+
+        public Role()
+        {
+            UserRoles = new HashSet<UserRole>();
+        }
     }
 }
