@@ -1,4 +1,4 @@
-﻿using CadoChat.Web.AspNetCore.Swagger.Interfaces;
+﻿using CadoChat.Web.AspNetCore.WebConfigurations.Interfaces;
 using CadoChat.Web.Common.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -7,7 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace CadoChat.Web.AspNetCore.Swagger
+namespace CadoChat.Web.AspNetCore.WebConfigurations
 {
 
     /// <summary>

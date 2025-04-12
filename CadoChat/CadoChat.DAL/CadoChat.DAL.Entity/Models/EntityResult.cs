@@ -11,7 +11,7 @@ namespace CadoChat.DAL.Entity.Models
     {
         public bool Success { get; private set; }
 
-        public string Message { get; private set; } = null!;
+        public string Message { get; private set; }
 
         public string? StackTrace { get; private set; }
 

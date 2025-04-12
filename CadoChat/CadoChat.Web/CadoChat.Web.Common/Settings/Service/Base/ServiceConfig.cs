@@ -18,17 +18,17 @@ namespace CadoChat.Web.Common.Settings.Service.Base
         /// <summary>
         /// Идентификатор сервиса
         /// </summary>
-        public string Name { get; set; } = null!;
+        public string Name { get; set; }
 
         /// <summary>
         /// URL сервиса
         /// </summary>
-        public string URL { get; set; } = null!;
+        public string URL { get; set; }
 
         /// <summary>
         /// Получатель токена доступа
         /// </summary>
-        public AudiencesAccess AudiencesAccess { get; set; } = null!;
+        public AudiencesAccess AudiencesAccess { get; set; }
 
     }
 }

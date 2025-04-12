@@ -11,12 +11,12 @@ namespace CadoChat.DAL.Entity.FacadeRepository
     public interface ISelectRepository<TEntity>
         where TEntity : IEntity
     {
-        Task<TEntity>? FirstOfDefaultAsync(Expression<Func<TEntity, bool>>? condition = null, CancellationToken cancel = default);
+        Task<TEntity?> FirstOfDefaultAsync(Expression<Func<TEntity, bool>>? condition = null, CancellationToken cancel = default);
 
         IEnumerable<TEntity>? Where(Func<TEntity, bool> where);
 
-        Task<TEntity>? GetEntityByIdAsync(Guid id, CancellationToken cancel = default);
+        Task<TEntity?> GetEntityByIdAsync(Guid id, CancellationToken cancel = default);
 
-        Task<IEnumerable<TEntity>>? GetAllEntitiesAsync(CancellationToken cancel = default);
+        Task<IEnumerable<TEntity>?> GetAllEntitiesAsync(CancellationToken cancel = default);
     }
 }

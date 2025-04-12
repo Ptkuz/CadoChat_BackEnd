@@ -1,4 +1,4 @@
-﻿using CadoChat.Web.AspNetCore.Logging.Interfaces;
+﻿using CadoChat.Web.AspNetCore.WebConfigurations.Interfaces;
 using CadoChat.Web.Common.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CadoChat.Web.AspNetCore.Logging
+namespace CadoChat.Web.AspNetCore.WebConfigurations
 {
 
     /// <summary>

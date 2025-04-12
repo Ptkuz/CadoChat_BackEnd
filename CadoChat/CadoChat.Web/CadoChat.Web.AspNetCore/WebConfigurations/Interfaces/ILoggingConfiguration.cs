@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CadoChat.Web.AspNetCore.Logging.Interfaces
+namespace CadoChat.Web.AspNetCore.WebConfigurations.Interfaces
 {
     public interface ILoggingConfiguration : IConfigurationService
     {

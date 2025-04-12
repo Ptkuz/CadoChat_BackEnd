@@ -1,4 +1,4 @@
-﻿using CadoChat.Web.AspNetCore.Swagger;
+﻿using CadoChat.Web.AspNetCore.WebConfigurations;
 using System;
 using System.Collections.Generic;
 using System.Linq;

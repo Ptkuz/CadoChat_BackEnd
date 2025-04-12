@@ -15,11 +15,11 @@ namespace CadoChat.Web.Common.Settings.Service.Scope
         /// <summary>
         /// Идентификатор области видимости
         /// </summary>
-        public string Name { get; set; } = null!;
+        public string Name { get; set; }
 
         /// <summary>
         /// Отображаемое значение области видимости
         /// </summary>
-        public string DisplayValiue { get; set; } = null!;
+        public string DisplayValiue { get; set; }
     }
 }

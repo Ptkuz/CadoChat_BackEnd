@@ -17,16 +17,16 @@ namespace CadoChat.Web.Common.Settings.Service
         /// <summary>
         /// Конфигурация сервиса авторизации
         /// </summary>
-        public ServiceConfig AuthService { get; set; } = null!;
+        public ServiceConfig AuthService { get; set; }
 
         /// <summary>
         /// Конфигурация сервиса чата
         /// </summary>
-        public ChatService ChatService { get; set; } = null!;
+        public ChatService ChatService { get; set; }
 
         /// <summary>
         /// Конфигурация API шлюза
         /// </summary>
-        public ServiceConfig API_Gateway { get; set; } = null!;
+        public ServiceConfig API_Gateway { get; set; }
     }
 }

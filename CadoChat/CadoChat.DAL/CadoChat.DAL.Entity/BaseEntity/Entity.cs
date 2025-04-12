@@ -4,80 +4,37 @@ namespace CadoChat.DAL.Entity.BaseEntity
 {
     public class Entity : IEntity
     {
-        
+        public Guid Id { get; private set; }
 
-        public Entity() { }
+        public DateTime CreatedAt { get; private set; }
 
-        private Guid id;
+        public DateTime ModifiedAt { get; private set; }
 
-        public Guid Id
+        public Entity()
         {
-            get
+            Id = Guid.NewGuid();
+
+            var currentDateTime = DateTime.UtcNow;
+
+            if (CreatedAt == default)
             {
-                return id;
+                CreatedAt = currentDateTime;
             }
-            set
-            {
-                SetEntityId();
-            }
-        }
 
-        private DateTime createdAt;
-
-        public DateTime CreatedAt
-        {
-            get
-            {
-                return createdAt;
-            }
-            set
-            {
-                SetCreatedAt();
-            }
-        }
-
-        private DateTime modifiedAt;
-
-        public DateTime ModifiedAt
-        {
-            get
-            {
-                return modifiedAt;
-            }
-            set
-            {
-                SetModifiedAt();
-            }
-        }
-
-        private void SetEntityId()
-        {
-            id = Guid.NewGuid();
-        }
-
-        private void SetCreatedAt()
-        {
-            createdAt = DateTime.UtcNow;
-        }
-
-        private void SetModifiedAt()
-        {
-
-            modifiedAt = DateTime.UtcNow;
-            ValidateModifiedAt();
-        }
-
-        private void ValidateModifiedAt()
-        {
-            if (modifiedAt < createdAt)
-            {
-                throw new IncorrectDateValidation("Дата изменения меньше даты добавления записи");
-            }
+            ModifiedAt = currentDateTime;
         }
 
         public virtual void Validate()
         {
             ValidateModifiedAt();
+        }
+
+        private void ValidateModifiedAt()
+        {
+            if (ModifiedAt < CreatedAt)
+            {
+                throw new IncorrectDateValidation("Дата изменения меньше даты добавления записи");
+            }
         }
 
     }

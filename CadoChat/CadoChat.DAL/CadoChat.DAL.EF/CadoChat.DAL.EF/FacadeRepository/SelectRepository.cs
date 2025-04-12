@@ -13,7 +13,7 @@ namespace CadoChat.DAL.EF.FacadeRepository
         {
         }
 
-        public async Task<TEntity>? FirstOfDefaultAsync(Expression<Func<TEntity, bool>>? condition = null, CancellationToken cancel = default)
+        public async Task<TEntity?> FirstOfDefaultAsync(Expression<Func<TEntity, bool>>? condition = null, CancellationToken cancel = default)
         {
             TEntity? entity = null;
 
@@ -36,12 +36,12 @@ namespace CadoChat.DAL.EF.FacadeRepository
             }
             return null;
         }
-        public async Task<TEntity>? GetEntityByIdAsync(Guid id, CancellationToken cancel = default)
+        public async Task<TEntity?> GetEntityByIdAsync(Guid id, CancellationToken cancel = default)
         {
             var entity = await _dbSet.FindAsync([id], cancel);
             return entity;
         }
-        public async Task<IEnumerable<TEntity>>? GetAllEntitiesAsync(CancellationToken cancel = default)
+        public async Task<IEnumerable<TEntity>?> GetAllEntitiesAsync(CancellationToken cancel = default)
         {
             var entities = await _dbSet.ToListAsync(cancel);
             return entities;

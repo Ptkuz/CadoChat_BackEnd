@@ -16,11 +16,11 @@ namespace CadoChat.Web.Common.Settings.Service.Audience
         /// <summary>
         /// Имя получателя
         /// </summary>
-        public string Name { get; set; } = null!;
+        public string Name { get; set; }
 
         /// <summary>
         /// Отображаемое значение
         /// </summary>
-        public string DisplayValue { get; set; } = null!;
+        public string DisplayValue { get; set; }
     }
 }

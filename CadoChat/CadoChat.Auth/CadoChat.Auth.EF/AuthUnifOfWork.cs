@@ -14,25 +14,28 @@ namespace CadoChat.Auth.EF
     public class AuthUnifOfWork : UnitOfWork, IAuthUnifOfWork
     {
 
-        public IFacadeRepository<LoginAttempt> LoginAttemptRepository { get; }
-        public IFacadeRepository<RefreshToken> RefreshTokenRepository { get; }
+        public IFacadeRepository<UserClaim> UserClaimRepository { get; }
+        public IFacadeRepository<UserLogin> UserLoginRepository { get; }
         public IFacadeRepository<Role> RoleRepository { get; }
         public IFacadeRepository<User> UserRepository { get; }
         public IFacadeRepository<UserRole> UserRoleRepository { get; }
+        public IFacadeRepository<UserToken> UserTokenRepository { get; }
 
         public AuthUnifOfWork(AuthDbContext context, 
-        IFacadeRepository<LoginAttempt> loginAttemptRepository,
-        IFacadeRepository<RefreshToken> refreshTokenRepository,
+        IFacadeRepository<UserClaim> loginAttemptRepository,
+        IFacadeRepository<UserLogin> refreshTokenRepository,
         IFacadeRepository<Role> roleRepository,
         IFacadeRepository<User> userRepository,
-        IFacadeRepository<UserRole> userRoleRepository) 
+        IFacadeRepository<UserRole> userRoleRepository,
+        IFacadeRepository<UserToken> userTokenRepository) 
             : base(context)
         {
-            LoginAttemptRepository = loginAttemptRepository;
-            RefreshTokenRepository = refreshTokenRepository;
+            UserClaimRepository = loginAttemptRepository;
+            UserLoginRepository = refreshTokenRepository;
             RoleRepository = roleRepository;
             UserRepository = userRepository;
             UserRoleRepository = userRoleRepository;
+            UserTokenRepository = userTokenRepository;
         }
     }
 }

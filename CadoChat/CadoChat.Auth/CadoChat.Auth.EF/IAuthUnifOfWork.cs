@@ -11,10 +11,11 @@ namespace CadoChat.Auth.EF
 {
     public interface IAuthUnifOfWork : IUnifOfWork
     {
-        IFacadeRepository<LoginAttempt> LoginAttemptRepository { get; }
-        IFacadeRepository<RefreshToken> RefreshTokenRepository { get; }
+        IFacadeRepository<UserClaim> UserClaimRepository { get; }
+        IFacadeRepository<UserLogin> UserLoginRepository { get; }
         IFacadeRepository<Role> RoleRepository { get; }
         IFacadeRepository<User> UserRepository { get; }
         IFacadeRepository<UserRole> UserRoleRepository { get; }
+        IFacadeRepository<UserToken> UserTokenRepository { get; }
     }
 }

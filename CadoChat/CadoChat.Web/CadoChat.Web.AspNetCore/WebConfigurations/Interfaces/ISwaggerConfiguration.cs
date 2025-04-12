@@ -1,6 +1,6 @@
 ﻿using CadoChat.Web.Common.Services.Interfaces;
 
-namespace CadoChat.Web.AspNetCore.Swagger.Interfaces
+namespace CadoChat.Web.AspNetCore.WebConfigurations.Interfaces
 {
 
     /// <summary>

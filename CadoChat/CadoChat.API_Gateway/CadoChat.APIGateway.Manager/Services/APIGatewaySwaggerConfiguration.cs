@@ -1,5 +1,5 @@
-﻿using CadoChat.Web.AspNetCore.Swagger;
-using CadoChat.Web.AspNetCore.Swagger.Interfaces;
+﻿using CadoChat.Web.AspNetCore.WebConfigurations;
+using CadoChat.Web.AspNetCore.WebConfigurations.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 using System;

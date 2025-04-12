@@ -13,8 +13,7 @@ using CadoChat.Security.Authorization.Services.Interfaces;
 using CadoChat.Security.Cors.Services.Interfaces;
 using CadoChat.Security.Validation.Services;
 using CadoChat.Security.Validation.Services.Interfaces;
-using CadoChat.Web.AspNetCore.Logging.Interfaces;
-using CadoChat.Web.AspNetCore.Swagger.Interfaces;
+using CadoChat.Web.AspNetCore.WebConfigurations.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,6 +48,8 @@ swaggerService.AddService(builder);
 // Добавляем IdentityServer
 identityServerService.AddService(builder);
 
+services.AddAuthMappers();
+
 authService.AddService(builder);
 authorizationService.AddService(builder);
 
@@ -58,6 +59,10 @@ corsService.AddService(builder);
 services.AddAuthRepositories();
 services.AddAuthFacadeRepositories();
 services.AddAuthUnitOfWork();
+
+services.AddUserManager();
+
+services.AddAuthMediatR();
 
 var app = builder.Build();
 

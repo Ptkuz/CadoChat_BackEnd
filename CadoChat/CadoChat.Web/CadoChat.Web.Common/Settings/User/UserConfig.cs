@@ -16,7 +16,7 @@ namespace CadoChat.Web.Common.Settings.User
         /// <summary>
         /// Идентификатор пользователя
         /// </summary>
-        public string Id { get; set; } = null!;
+        public string Id { get; set; }
 
         /// <summary>
         /// Время жизни токена доступа

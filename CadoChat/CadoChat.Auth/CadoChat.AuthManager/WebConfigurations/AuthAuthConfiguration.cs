@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CadoChat.AuthManager.Services
+namespace CadoChat.AuthManager.WebConfigurations
 {
 
     /// <summary>

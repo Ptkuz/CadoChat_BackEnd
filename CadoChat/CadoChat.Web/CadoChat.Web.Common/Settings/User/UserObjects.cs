@@ -16,11 +16,11 @@ namespace CadoChat.Web.Common.Settings.User
         /// <summary>
         /// Конфигурация клиента
         /// </summary>
-        public UserConfig ClientUser { get; set; } = null!;
+        public UserConfig ClientUser { get; set; }
 
         /// <summary>
         /// Конфигурация администратора
         /// </summary>
-        public UserConfig AdminUser { get; set; } = null!;
+        public UserConfig AdminUser { get; set; }
     }
 }

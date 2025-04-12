@@ -16,34 +16,44 @@ namespace CadoChat.Auth.EF.Context
 
         public DbSet<UserRole> UserRoles { get; set; }
 
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<UserClaim> UserClaims { get; set; }
 
-        public DbSet<LoginAttempt> LoginAttempts { get; set; }
+        public DbSet<UserLogin> UserLogins { get; set; }
+
+        public DbSet<UserToken> UserTokens { get; set; }
 
         public AuthDbContext(DbContextOptions<AuthDbContext> options) 
             : base(options)
         {
             // Удаление базы данных
-            Database.EnsureDeleted();
+            //Database.EnsureDeleted();
 
             // Создание базы данных заново
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Entity<UserRole>()
-                .HasKey(ur => new { ur.UserId, ur.RoleId });
+            base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<UserRole>()
-                .HasOne(ur => ur.User)
-                .WithMany(u => u.UserRoles)
+            modelBuilder.Entity<User>().HasIndex(u => u.NormalizedUserName).IsUnique();
+            modelBuilder.Entity<Role>().HasIndex(r => r.NormilizedName).IsUnique();
+
+            modelBuilder.Entity<UserRole>().HasKey(ur => new { ur.UserId, ur.RoleId });
+
+            modelBuilder.Entity<UserLogin>().HasKey(ul => new { ul.LoginProvider, ul.ProviderKey });
+
+            modelBuilder.Entity<UserToken>().HasKey(ut => new { ut.UserId, ut.LoginProvider, ut.Name });
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.UserRoles)
+                .WithOne(ur => ur.User)
                 .HasForeignKey(ur => ur.UserId);
 
-            modelBuilder.Entity<UserRole>()
-                .HasOne(ur => ur.Role)
-                .WithMany(r => r.UserRoles)
+            modelBuilder.Entity<Role>()
+                .HasMany(r => r.UserRoles)
+                .WithOne(ur => ur.Role)
                 .HasForeignKey(ur => ur.RoleId);
         }
     }

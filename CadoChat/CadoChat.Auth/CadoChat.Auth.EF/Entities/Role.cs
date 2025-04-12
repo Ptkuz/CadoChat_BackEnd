@@ -5,19 +5,11 @@ namespace CadoChat.Auth.EF.Entities
     public class Role : Entity
     {
 
-        private string name = null!;
+        public string Name { get; set; }
 
-        public string Name
-        {
-            get
-            {
-                return name;
-            }
-            set
-            {
-                name = value;
-            }
-        }
+        public string NormilizedName { get; set; }
+
+        public string ConcurrencyStamp { get; set; }
 
         public ICollection<UserRole> UserRoles { get; set; }
 

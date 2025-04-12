@@ -16,12 +16,12 @@ namespace CadoChat.Web.Common.Settings.Service.Scope
         /// <summary>
         /// Конфигурация области видимости отправки сообщения
         /// </summary>
-        public ScopeConfig SendMessageScope { get; set; } = null!;
+        public ScopeConfig SendMessageScope { get; set; }
 
         /// <summary>
         /// Конфигурация области видимости получения сообщения
         /// </summary>
-        public ScopeConfig ReceiveMessageScope { get; set; } = null!;
+        public ScopeConfig ReceiveMessageScope { get; set; }
 
         /// <summary>
         /// Инициализация областей видимости чата
