@@ -15,13 +15,5 @@ namespace CadoChat.Web.Common.Services.Interfaces
     public interface IApplicationBuilderInitializer
     {
 
-        /// <summary>
-        /// Получить сервис для инициализации приложения
-        /// </summary>
-        /// <typeparam name="TService">Тип сервиса должен наследоваться от <see cref="IConfigurationService"/></typeparam>
-        /// <param name="type">Тип сервиса</param>
-        /// <returns>Сервис для инициализации приложения</returns>
-        TService GetService<TService>(Type type) 
-            where TService : IConfigurationService;
     }
 }

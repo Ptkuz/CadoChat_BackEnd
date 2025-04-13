@@ -29,7 +29,7 @@ namespace CadoChat.AuthService.MediatR.RequestHandlers
 
                 if (loginResult.Success)
                 {
-                    return new LoginUserResponse(loginResult.Token);
+                    return new LoginUserResponse(loginResult.Token, loginResult.Message);
                 }
                 else
                 {

@@ -26,41 +26,68 @@ var fileSerializer = serviceProvider.GetRequiredService<IFileSerializer>();
 
 var InitializedBuilder = ApplicationBuilderInitializer.CreateInstance(builder, securityKeyService, fileSerializer);
 
-
-var loggingService = InitializedBuilder.GetService<ILoggingConfiguration>(typeof(ILoggingConfiguration));
-var authApiGatewayService = InitializedBuilder.GetService<IAuthConfiguration>(typeof(IAuthConfiguration));
-var swaggerService = InitializedBuilder.GetService<ISwaggerConfiguration>(typeof(ISwaggerConfiguration));
-var corsService = InitializedBuilder.GetService<ICorsConfiguration>(typeof(ICorsConfiguration));
-var apiGatewayService = InitializedBuilder.GetService<IAPIGatewayConfiguration>(typeof(IAPIGatewayConfiguration));
-var identityServerService = InitializedBuilder.GetService<IIdentityServiceConfiguration>(typeof(IIdentityServiceConfiguration));
-
 builder.Services.AddRouting();
 
-authApiGatewayService.AddService(builder);
-
-swaggerService.AddService(builder);
+InitializedBuilder.ConfigurationAuthOptions.AddService(builder);
+InitializedBuilder.SwaggerConfigurationService.AddService(builder);
 
 builder.Services.AddOcelot();
 builder.Services.AddAuthorization();
 
-corsService.AddService(builder);
+InitializedBuilder.CorsConfigurationService.AddService(builder);
 
 builder.Services.AddHeaderRouting();
 
 var app = builder.Build();
 
-apiGatewayService.UseService(app);
+app.Use(async (context, next) =>
+{
+    
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
+
+InitializedBuilder.ApiGatewayConfigurationService.UseService(app);
+
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
 
 app.UseMiddleware<AccessAPIGatewayMiddleware>();
 
-swaggerService.UseService(app);
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
 
-corsService.UseService(app);
+InitializedBuilder.SwaggerConfigurationService.UseService(app);
+
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
+
+InitializedBuilder.CorsConfigurationService.UseService(app);
+
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
 
 app.UseHttpsRedirection();
 
 app.UseRouting();
-authApiGatewayService.UseService(app);
+InitializedBuilder.ConfigurationAuthOptions.UseService(app);
 app.UseAuthorization();
 
 await app.UseOcelot();

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CadoChat.AuthManager.Exceptions;
 using CadoChat.AuthManager.Models.Model;
+using CadoChat.AuthManager.Models.Result;
 using CadoChat.AuthManager.Services.Interfaces;
 using CadoChat.AuthService.MediatR.RequstCommands;
 using CadoChat.AuthService.MediatR.Responses;
@@ -26,15 +27,15 @@ namespace CadoChat.AuthService.MediatR.RequestHandlers
 
             if (userModel != null)
             {
-                var registerResult = await _userManager.RegisterUserAsync(userModel);
+                RegisterUserResult registerResult = await _userManager.RegisterUserAsync(userModel).ConfigureAwait(false);
 
                 if (registerResult.Success)
                 {
-                    return new RegisterUserResponse(registerResult.RegisterUser.UserName);
+                    return new RegisterUserResponse(registerResult.RegisterUser!.UserName, registerResult.Message!);
                 }
                 else
                 {
-                    return new RegisterUserResponse(registerResult.RegisterUser.UserName, new RegisterUserException(registerResult.Message));
+                    return new RegisterUserResponse(registerResult.RegisterUser!.UserName, new RegisterUserException(registerResult.Message!));
                 }
 
             }

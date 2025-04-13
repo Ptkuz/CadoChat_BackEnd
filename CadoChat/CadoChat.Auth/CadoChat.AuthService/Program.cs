@@ -26,15 +26,7 @@ using var serviceProvider = builder.Services.BuildServiceProvider();
 var securityKeyService = serviceProvider.GetRequiredService<ISecurityKeyService<RsaSecurityKey>>();
 var fileSerializer = serviceProvider.GetRequiredService<IFileSerializer>();
 
-var InitializedBuilder = ApplicationBuilderInitializer.CreateInstance(builder, securityKeyService, fileSerializer);
-
-var loggingService = InitializedBuilder.GetService<ILoggingConfiguration>(typeof(ILoggingConfiguration));
-var authService = InitializedBuilder.GetService<IAuthConfiguration>(typeof(IAuthConfiguration));
-var swaggerService = InitializedBuilder.GetService<ISwaggerConfiguration>(typeof(ISwaggerConfiguration));
-var corsService = InitializedBuilder.GetService<ICorsConfiguration>(typeof(ICorsConfiguration));
-var identityServerService = InitializedBuilder.GetService<IIdentityServiceConfiguration>(typeof(IIdentityServiceConfiguration));
-var authorizationService = InitializedBuilder.GetService<IAuthorizationConfiguration>(typeof(IAuthorizationConfiguration));
-var apiGatewayService = InitializedBuilder.GetService<IAPIGatewayConfiguration>(typeof(IAPIGatewayConfiguration));
+var InitializedBuilder = AuthBuilderInitializer.CreateInstance(builder, securityKeyService, fileSerializer);
 
 var services = builder.Services;
 
@@ -43,19 +35,19 @@ builder.Services.AddTransient<ITokenManagerService<User>, TokenManagerService<Us
 // Настройка базы данных
 services.AddDBContext(builder);
 
-swaggerService.AddService(builder);
+InitializedBuilder.SwaggerConfigurationService.AddService(builder);
 
 // Добавляем IdentityServer
-identityServerService.AddService(builder);
+InitializedBuilder.ConfigurationIdentityService.AddService(builder);
 
 services.AddAuthMappers();
 
-authService.AddService(builder);
-authorizationService.AddService(builder);
+InitializedBuilder.ConfigurationAuthOptions.AddService(builder);
+InitializedBuilder.AuthorizationConfiguration.AddService(builder);
 
 services.AddControllers();
 
-corsService.AddService(builder);
+InitializedBuilder.CorsConfigurationService.AddService(builder);
 services.AddAuthRepositories();
 services.AddAuthFacadeRepositories();
 services.AddAuthUnitOfWork();
@@ -66,18 +58,18 @@ services.AddAuthMediatR();
 
 var app = builder.Build();
 
-apiGatewayService.UseService(app);
+InitializedBuilder.ApiGatewayConfigurationService.UseService(app);
 
 app.UseMiddleware<IdentityServerURLMiddleware>();
 
-corsService.UseService(app);
+InitializedBuilder.CorsConfigurationService.UseService(app);
 
-swaggerService.UseService(app);
+InitializedBuilder.SwaggerConfigurationService.UseService(app);
 
 app.UseRouting();
-identityServerService.UseService(app);
-authService.UseService(app);
-authorizationService.UseService(app);
+InitializedBuilder.ConfigurationIdentityService.UseService(app);
+InitializedBuilder.ConfigurationAuthOptions.UseService(app);
+InitializedBuilder.AuthorizationConfiguration.UseService(app);
 app.MapControllers();
 
 app.Run();

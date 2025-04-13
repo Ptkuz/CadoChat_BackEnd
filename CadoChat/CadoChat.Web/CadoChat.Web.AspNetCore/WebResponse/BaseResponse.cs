@@ -75,8 +75,9 @@ namespace CadoChat.Web.AspNetCore.WebResponse
         /// <summary>
         /// Инициализатор успешного ответа
         /// </summary>
-        public BaseResponse()
+        public BaseResponse(string message)
         {
+            Message = message;
             Success = true;
         }
 

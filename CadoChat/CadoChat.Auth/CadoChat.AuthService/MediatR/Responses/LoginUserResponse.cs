@@ -7,8 +7,8 @@ namespace CadoChat.AuthService.MediatR.Responses
     {
         public string? Token { get;set; }
 
-        public LoginUserResponse(string token)
-            : base()
+        public LoginUserResponse(string token, string message)
+            : base(message)
         {
             Token = token;
         }

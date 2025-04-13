@@ -1,14 +1,9 @@
 using CadoChat.ChatService.Initialize;
 using CadoChat.IO.Json.Services;
 using CadoChat.IO.Json.Services.Interfaces;
-using CadoChat.Security.APIGateway.Services.Interfaces;
 using CadoChat.Security.Authentication.Middlewaers;
-using CadoChat.Security.Authentication.Services.Interfaces;
-using CadoChat.Security.Authorization.Services.Interfaces;
-using CadoChat.Security.Cors.Services.Interfaces;
 using CadoChat.Security.Validation.Services;
 using CadoChat.Security.Validation.Services.Interfaces;
-using CadoChat.Web.AspNetCore.WebConfigurations.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,41 +15,34 @@ using var serviceProvider = builder.Services.BuildServiceProvider();
 var securityKeyService = serviceProvider.GetRequiredService<ISecurityKeyService<RsaSecurityKey>>();
 var fileSerializer = serviceProvider.GetRequiredService<IFileSerializer>();
 
-var InitializedBuilder = ApplicationBuilderInitializer.CreateInstance(builder, securityKeyService, fileSerializer);
-
-var loggingService = InitializedBuilder.GetService<ILoggingConfiguration>(typeof(ILoggingConfiguration));
-var authService = InitializedBuilder.GetService<IAuthConfiguration>(typeof(IAuthConfiguration));
-var swaggerService = InitializedBuilder.GetService<ISwaggerConfiguration>(typeof(ISwaggerConfiguration));
-var corsService = InitializedBuilder.GetService<ICorsConfiguration>(typeof(ICorsConfiguration));
-var apiGatewayService = InitializedBuilder.GetService<IAPIGatewayConfiguration>(typeof(IAPIGatewayConfiguration));
-var authorizationService = InitializedBuilder.GetService<IAuthorizationConfiguration>(typeof(IAuthorizationConfiguration));
+var InitializedBuilder = ChatBuilderInitializer.CreateInstance(builder, securityKeyService, fileSerializer);
 
 builder.Services.AddRouting();
-loggingService.AddService(builder);
 
-authService.AddService(builder);
-authorizationService.AddService(builder);
-swaggerService.AddService(builder);
+InitializedBuilder.LoggingConfigurationService.AddService(builder);
+InitializedBuilder.ConfigurationAuthOptions.AddService(builder);
+InitializedBuilder.ConfigurationAuthorizationService.AddService(builder);
+InitializedBuilder.SwaggerConfigurationService.AddService(builder);
 
 builder.Services.AddControllers();
 
-corsService.AddService(builder);
+InitializedBuilder.CorsConfigurationService.AddService(builder);
 
 var app = builder.Build();
 
-apiGatewayService.UseService(app);
+InitializedBuilder.ApiGatewayConfigurationService.UseService(app);
 
 app.UseMiddleware<AccessAPIGatewayMiddleware>();
 
-corsService.UseService(app);
-swaggerService.UseService(app);
+InitializedBuilder.CorsConfigurationService.UseService(app);
+InitializedBuilder.SwaggerConfigurationService.UseService(app);
 
 app.UseRouting();
 
 app.UseMiddleware<AuthenticationErrorMiddleware>();
 
-authService.UseService(app);
-authorizationService.UseService(app);
+InitializedBuilder.ConfigurationAuthOptions.UseService(app);
+InitializedBuilder.ConfigurationAuthorizationService.UseService(app);
 
 app.MapControllers();
 

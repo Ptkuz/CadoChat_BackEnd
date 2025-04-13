@@ -1,10 +1,12 @@
-﻿using CadoChat.APIGateway.Manager.Services;
-using CadoChat.Auth.IdentityServer.Services;
+﻿using CadoChat.Auth.IdentityServer.Services;
+using CadoChat.AuthManager.WebConfigurations;
 using CadoChat.AuthService.Services.Interfaces;
 using CadoChat.IO.Json.Services.Interfaces;
 using CadoChat.Security.APIGateway.Services;
 using CadoChat.Security.APIGateway.Services.Interfaces;
 using CadoChat.Security.Authentication.Services.Interfaces;
+using CadoChat.Security.Authorization.Services;
+using CadoChat.Security.Authorization.Services.Interfaces;
 using CadoChat.Security.Cors.Services;
 using CadoChat.Security.Cors.Services.Interfaces;
 using CadoChat.Security.Validation.Services.Interfaces;
@@ -12,12 +14,11 @@ using CadoChat.Web.AspNetCore.WebConfigurations;
 using CadoChat.Web.AspNetCore.WebConfigurations.Interfaces;
 using CadoChat.Web.Common.Services;
 using CadoChat.Web.Common.Services.Interfaces;
-using CudoChat.API_Gateway.Initialize;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CadoChat.AuthService.Initialize
 {
-    public class ApplicationBuilderInitializer : IApiGatewayBuilderInitializer
+    public class AuthBuilderInitializer : IAuthBuilderInitializer
     {
 
         public ILoggingConfiguration LoggingConfigurationService { get; }
@@ -32,32 +33,32 @@ namespace CadoChat.AuthService.Initialize
 
         public IIdentityServiceConfiguration ConfigurationIdentityService { get; }
 
-        private ApplicationBuilderInitializer(WebApplicationBuilder applicationBuilder,
-            ISecurityKeyService<RsaSecurityKey> securityKeyService, IFileSerializer fileSerializer)
+        public IAuthorizationConfiguration AuthorizationConfiguration { get; }
+
+        private AuthBuilderInitializer(WebApplicationBuilder applicationBuilder,
+            ISecurityKeyService<RsaSecurityKey>? securityKeyService, IFileSerializer fileSerializer)
         {
 
             var globalSettingsPath = applicationBuilder.Configuration["GlobalSettingsPath"];
 
-            var globalSettings = GlobalSettingsLoader.GetInstance(globalSettingsPath, fileSerializer);
+            GlobalSettingsLoader.GetInstance(globalSettingsPath, fileSerializer);
 
-            applicationBuilder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
             applicationBuilder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-            var configuration = applicationBuilder.Configuration;
-
             LoggingConfigurationService = new LoggingConfiguration();
-            ConfigurationAuthOptions = new APIGatewayAuthConfiguration(securityKeyService);
-            SwaggerConfigurationService = new APIGatewaySwaggerConfiguration();
+            ConfigurationAuthOptions = new AuthAuthConfiguration(securityKeyService);
+            SwaggerConfigurationService = new AuthSwaggerConfiguration();
             CorsConfigurationService = new CorsConfiguration();
             ApiGatewayConfigurationService = new APIGatewayConfiguration();
             ConfigurationIdentityService = new IdentityServiceConfiguration(securityKeyService);
+            AuthorizationConfiguration = new AuthorizationConfiguration();
         }
 
-        public static IApiGatewayBuilderInitializer CreateInstance(WebApplicationBuilder applicationBuilder,
-            ISecurityKeyService<RsaSecurityKey> securityKeyService, IFileSerializer fileSerializer)
+        public static IAuthBuilderInitializer CreateInstance(WebApplicationBuilder applicationBuilder,
+            ISecurityKeyService<RsaSecurityKey>? securityKeyService, IFileSerializer fileSerializer)
         {
 
-            var instance = new ApplicationBuilderInitializer(applicationBuilder, securityKeyService, fileSerializer);
+            var instance = new AuthBuilderInitializer(applicationBuilder, securityKeyService, fileSerializer);
             return instance;
         }
     }

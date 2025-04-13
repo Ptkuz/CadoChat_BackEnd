@@ -2,6 +2,7 @@
 using CadoChat.Auth.EF.Entities;
 using CadoChat.AuthManager.Services.Interfaces;
 using CadoChat.AuthService.MediatR.RequstCommands;
+using CadoChat.AuthService.MediatR.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,15 +19,22 @@ public class AuthController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpPost("login")]
-    public async Task<IActionResult> LoginViaEmail([FromBody] LoginViaEmailCommand command)
+    [HttpGet("get")]
+    public async Task<IActionResult> Get()
+    {
+        
+        return Ok("Check");
+    }
+
+    [HttpPost("loginViaEmail")]
+    public async Task<ActionResult<LoginUserResponse>> LoginViaEmail([FromBody] LoginViaEmailCommand command)
     {
         var result = await _mediator.Send(command).ConfigureAwait(false);
         return Ok(result);
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterUserCommand command)
+    public async Task<ActionResult<RegisterUserResponse>> Register([FromBody] RegisterUserCommand command)
     {
 
         var result = await _mediator.Send(command).ConfigureAwait(false);

@@ -13,8 +13,8 @@ namespace CadoChat.AuthService.MediatR.Responses
             Username = username;
         }
 
-        public RegisterUserResponse(string username)
-            : base()
+        public RegisterUserResponse(string username, string message)
+            : base(message)
         {
             Username = username;
         }

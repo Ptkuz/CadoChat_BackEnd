@@ -54,6 +54,8 @@ namespace CadoChat.Security.Authentication.Middlewaers
             context.Request.Headers.Append("X-Forwarded-Host", xForwardedHost);
 
             await _next(context);
+
+            var res = context;
         }
     }
 }
