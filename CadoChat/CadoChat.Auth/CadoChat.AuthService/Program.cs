@@ -1,21 +1,18 @@
-using CadoChat.Auth.EF.Context;
 using CadoChat.Auth.EF.Entities;
 using CadoChat.Auth.IdentityServer.Middlewaers;
+using CadoChat.Auth.IdentityServer.WebConfigurations;
 using CadoChat.AuthManager.Services;
 using CadoChat.AuthManager.Services.Interfaces;
+using CadoChat.AuthManager.WebConfigurations;
 using CadoChat.AuthService.DI;
 using CadoChat.AuthService.Initialize;
-using CadoChat.AuthService.Services.Interfaces;
 using CadoChat.IO.Json.Services;
 using CadoChat.IO.Json.Services.Interfaces;
-using CadoChat.Security.APIGateway.Services.Interfaces;
-using CadoChat.Security.Authentication.Services.Interfaces;
-using CadoChat.Security.Authorization.Services.Interfaces;
-using CadoChat.Security.Cors.Services.Interfaces;
+using CadoChat.Security.APIGateway.WebConfigurations;
+using CadoChat.Security.Authorization.WebConfigurations;
+using CadoChat.Security.Cors.WebConfigurations;
 using CadoChat.Security.Validation.Services;
 using CadoChat.Security.Validation.Services.Interfaces;
-using CadoChat.Web.AspNetCore.WebConfigurations.Interfaces;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,7 +25,7 @@ using var serviceProvider = builder.Services.BuildServiceProvider();
 var securityKeyService = serviceProvider.GetRequiredService<ISecurityKeyService<RsaSecurityKey>>();
 var fileSerializer = serviceProvider.GetRequiredService<IFileSerializer>();
 
-var InitializedBuilder = AuthBuilderInitializer.CreateInstance(builder, securityKeyService, fileSerializer);
+builder.InitWebApplicationSettings(securityKeyService, fileSerializer);
 
 var services = builder.Services;
 
@@ -37,19 +34,19 @@ builder.Services.AddTransient<ITokenManagerService<User>, TokenManagerService<Us
 // Настройка базы данных
 services.AddDBContext(builder);
 
-InitializedBuilder.SwaggerConfigurationService.AddService(builder);
+builder.AddAuthSwaggerService();
 
 // Добавляем IdentityServer
-InitializedBuilder.ConfigurationIdentityService.AddService(builder);
+builder.AddIdentityService(securityKeyService);
 
 services.AddAuthMappers();
 
-InitializedBuilder.ConfigurationAuthOptions.AddService(builder);
-InitializedBuilder.AuthorizationConfiguration.AddService(builder);
+builder.AddAuthenticationService();
+builder.AddAuthorizationService();
 
 services.AddControllers();
 
-InitializedBuilder.CorsConfigurationService.AddService(builder);
+builder.AddCorsService();
 services.AddAuthRepositories();
 services.AddAuthFacadeRepositories();
 services.AddAuthUnitOfWork();
@@ -66,8 +63,7 @@ app.Use(async (context, next) =>
     logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
     await next();
 });
-
-InitializedBuilder.ApiGatewayConfigurationService.UseService(app);
+app.UseAPIGatewayService();
 
 app.Use(async (context, next) =>
 {
@@ -85,7 +81,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
-InitializedBuilder.CorsConfigurationService.UseService(app);
+app.UseCorsService();
 
 app.Use(async (context, next) =>
 {
@@ -94,7 +90,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
-InitializedBuilder.SwaggerConfigurationService.UseService(app);
+app.UseAuthSwaggerService();
 
 app.Use(async (context, next) =>
 {
@@ -111,7 +107,7 @@ app.Use(async (context, next) =>
     logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
     await next();
 });
-InitializedBuilder.ConfigurationIdentityService.UseService(app);
+app.UseIdentityService();
 
 app.Use(async (context, next) =>
 {
@@ -120,7 +116,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
-InitializedBuilder.ConfigurationAuthOptions.UseService(app);
+app.UseAuthenticatioService();
 
 app.Use(async (context, next) =>
 {
@@ -129,7 +125,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
-InitializedBuilder.AuthorizationConfiguration.UseService(app);
+app.UseAuthorizationService();
 
 app.Use(async (context, next) =>
 {

@@ -1,5 +1,4 @@
-﻿using CadoChat.Web.AspNetCore.WebConfigurations.Interfaces;
-using CadoChat.Web.Common.Services;
+﻿using CadoChat.Web.Common.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,22 +6,27 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace CadoChat.Web.AspNetCore.WebConfigurations
+namespace CadoChat.ChatManager.WebConfigurations
 {
-
-    /// <summary>
-    /// Конфигуратор Swagger
-    /// </summary>
-    public abstract class SwaggerConfiguration : ConfigurationService, ISwaggerConfiguration
+    public static class ChatSwaggerConfiguration
     {
 
-        public abstract string SwaggerTitle { get; }
+        private static GlobalSettingsLoader GlobalSettingsLoader => GlobalSettingsLoader.Instance
+            ?? throw new ArgumentNullException(nameof(GlobalSettingsLoader));
+
+        public static string SwaggerTitle
+        {
+            get
+            {
+                return GlobalSettingsLoader.GlobalSettings.Services.ChatService.Name;
+            }
+        }
 
         /// <summary>
         /// Добавить сервис Swagger
         /// </summary>
         /// <param name="webApplicationBuilder">Строитель приложения</param>
-        public virtual void AddService(WebApplicationBuilder webApplicationBuilder)
+        public static void AddChatSwaggerService(this WebApplicationBuilder webApplicationBuilder)
         {
             webApplicationBuilder.Services.AddSwaggerGen(ApplySettingsWithAuthorization);
         }
@@ -32,7 +36,7 @@ namespace CadoChat.Web.AspNetCore.WebConfigurations
         /// Использовать сервис Swagger
         /// </summary>
         /// <param name="applicationBuilder">Собранное приложение</param>
-        public virtual void UseService(WebApplication applicationBuilder)
+        public static void UseChatSwaggerService(this WebApplication applicationBuilder)
         {
             if (applicationBuilder.Environment.IsDevelopment())
             {
@@ -45,7 +49,7 @@ namespace CadoChat.Web.AspNetCore.WebConfigurations
         /// Применить настройки Swagger с авторизацией
         /// </summary>
         /// <param name="options"></param>
-        private void ApplySettingsWithAuthorization(SwaggerGenOptions options)
+        private static void ApplySettingsWithAuthorization(SwaggerGenOptions options)
         {
             options.SwaggerDoc("v1", new OpenApiInfo { Title = SwaggerTitle, Version = "v1" });
 

@@ -1,11 +1,6 @@
 ﻿using CadoChat.IO.Json.Services.Interfaces;
 using CadoChat.Web.Common.Services.Interfaces;
 using CadoChat.Web.Common.Settings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CadoChat.Web.Common.Services
 {
@@ -34,8 +29,8 @@ namespace CadoChat.Web.Common.Services
         /// <summary>
         /// Глобальные настройки окружения
         /// </summary>
-        public GlobalSettings GlobalSettings 
-        { 
+        public GlobalSettings GlobalSettings
+        {
             get
             {
                 if (globalSettings == null)
@@ -58,7 +53,7 @@ namespace CadoChat.Web.Common.Services
         /// <param name="globalConfigPath">Путь до файла с глобальными настройками окружения</param>
         /// <param name="fileSerializer">Сериализатор файлов</param>
         /// <returns>Экземпляр загрузчика глобальных настроек окружения</returns>
-        public static GlobalSettingsLoader GetInstance(string globalConfigPath, IFileSerializer fileSerializer)
+        public static GlobalSettingsLoader CreateInstance(string globalConfigPath, IFileSerializer fileSerializer)
         {
             if (Instance == null)
             {

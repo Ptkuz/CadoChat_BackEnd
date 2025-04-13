@@ -1,17 +1,16 @@
+using CadoChat.AuthManager.WebConfigurations;
 using CadoChat.AuthService.Initialize;
-using CadoChat.AuthService.Services.Interfaces;
 using CadoChat.IO.Json.Services;
 using CadoChat.IO.Json.Services.Interfaces;
-using CadoChat.Security.APIGateway.Services.Interfaces;
 using CadoChat.Security.Authentication.Middlewaers;
-using CadoChat.Security.Authentication.Services.Interfaces;
-using CadoChat.Security.Cors.Services.Interfaces;
 using CadoChat.Security.Validation.Services;
 using CadoChat.Security.Validation.Services.Interfaces;
-using CadoChat.Web.AspNetCore.WebConfigurations.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using CadoChat.APIGateway.Manager.WebConfigurations;
+using CadoChat.Security.APIGateway.WebConfigurations;
+using CadoChat.Security.Cors.WebConfigurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,17 +23,17 @@ using var serviceProvider = builder.Services.BuildServiceProvider();
 var securityKeyService = serviceProvider.GetRequiredService<ISecurityKeyService<RsaSecurityKey>>();
 var fileSerializer = serviceProvider.GetRequiredService<IFileSerializer>();
 
-var InitializedBuilder = ApplicationBuilderInitializer.CreateInstance(builder, securityKeyService, fileSerializer);
+builder.InitWebApplicationSettings(securityKeyService, fileSerializer);
 
 builder.Services.AddRouting();
 
-InitializedBuilder.ConfigurationAuthOptions.AddService(builder);
-InitializedBuilder.SwaggerConfigurationService.AddService(builder);
+builder.AddAPIGatewayAuthenticationhService();
+builder.AddAPIGatewaySwaggerService();
 
 builder.Services.AddOcelot();
 builder.Services.AddAuthorization();
 
-InitializedBuilder.CorsConfigurationService.AddService(builder);
+builder.AddCorsService();
 
 builder.Services.AddHeaderRouting();
 
@@ -42,13 +41,12 @@ var app = builder.Build();
 
 app.Use(async (context, next) =>
 {
-    
+
     var logger = app.Services.GetRequiredService<ILogger<Program>>();
     logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
     await next();
 });
-
-InitializedBuilder.ApiGatewayConfigurationService.UseService(app);
+app.UseAPIGatewayService();
 
 app.Use(async (context, next) =>
 {
@@ -66,7 +64,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
-InitializedBuilder.SwaggerConfigurationService.UseService(app);
+app.UseAPIGatewaySwaggerService();
 
 app.Use(async (context, next) =>
 {
@@ -75,7 +73,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
-InitializedBuilder.CorsConfigurationService.UseService(app);
+app.UseCorsService();
 
 app.Use(async (context, next) =>
 {
@@ -102,7 +100,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
-InitializedBuilder.ConfigurationAuthOptions.UseService(app);
+app.UseAPIGatewayAuthenticationhService();
 
 app.Use(async (context, next) =>
 {

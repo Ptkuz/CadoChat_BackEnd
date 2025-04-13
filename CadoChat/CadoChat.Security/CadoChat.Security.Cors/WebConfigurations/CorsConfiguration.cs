@@ -1,32 +1,31 @@
-﻿using CadoChat.Security.Common.Exceptions;
-using CadoChat.Security.Cors.Services.Interfaces;
-using CadoChat.Web.Common.Services;
-using CadoChat.Web.Common.Settings;
-using CadoChat.Web.Common.Settings.Service.Base;
+﻿using CadoChat.Web.Common.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Runtime.InteropServices;
 
-namespace CadoChat.Security.Cors.Services
+namespace CadoChat.Security.Cors.WebConfigurations
 {
 
     /// <summary>
     /// Конфигуратор CORS
     /// </summary>
-    public class CorsConfiguration : ConfigurationService, ICorsConfiguration
+    public static class CorsConfiguration
     {
+
+        private static GlobalSettingsLoader GlobalSettingsLoader
+            => GlobalSettingsLoader.Instance ??
+            throw new ArgumentNullException(nameof(GlobalSettingsLoader.Instance));
+
         /// <summary>
         /// Имя политики CORS
         /// </summary>
-        protected string polilyName = "AllowGateway";
+        private static string polilyName = "AllowGateway";
 
         /// <summary>
         /// Добавить сервис
         /// </summary>
         /// <param name="webApplicationBuilder">Строитель приложения</param>
-        public virtual void AddService(WebApplicationBuilder webApplicationBuilder)
+        public static void AddCorsService(this WebApplicationBuilder webApplicationBuilder)
         {
             webApplicationBuilder.Services.AddCors(SetCorsOptions);
         }
@@ -35,7 +34,7 @@ namespace CadoChat.Security.Cors.Services
         /// Использовать сервис
         /// </summary>
         /// <param name="applicationBuilder">Собранное приложение</param>
-        public virtual void UseService(WebApplication applicationBuilder)
+        public static void UseCorsService(this WebApplication applicationBuilder)
         {
             applicationBuilder.UseCors(polilyName);
         }
@@ -44,7 +43,7 @@ namespace CadoChat.Security.Cors.Services
         /// Установить опции CORS
         /// </summary>
         /// <param name="options">Опции CORS</param>
-        private void SetCorsOptions(CorsOptions options)
+        private static void SetCorsOptions(CorsOptions options)
         {
             options.AddPolicy(polilyName, SetCorsPolicy);
         }
@@ -53,10 +52,10 @@ namespace CadoChat.Security.Cors.Services
         /// Установить политику CORS
         /// </summary>
         /// <param name="corsPolicyBuilder">Политика CORS</param>
-        private void SetCorsPolicy(CorsPolicyBuilder corsPolicyBuilder)
+        private static void SetCorsPolicy(CorsPolicyBuilder corsPolicyBuilder)
         {
 
-            var apiGateway = GlobalSettings.Services.API_Gateway;
+            var apiGateway = GlobalSettingsLoader.GlobalSettings.Services.API_Gateway;
 
             corsPolicyBuilder.WithOrigins(apiGateway.URL)
                       .AllowAnyMethod()

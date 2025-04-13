@@ -1,9 +1,13 @@
+using CadoChat.ChatManager.WebConfigurations;
 using CadoChat.ChatService.Initialize;
 using CadoChat.IO.Json.Services;
 using CadoChat.IO.Json.Services.Interfaces;
+using CadoChat.Security.APIGateway.WebConfigurations;
 using CadoChat.Security.Authentication.Middlewaers;
+using CadoChat.Security.Cors.WebConfigurations;
 using CadoChat.Security.Validation.Services;
 using CadoChat.Security.Validation.Services.Interfaces;
+using CadoChat.Web.AspNetCore.WebConfigurations;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,18 +19,17 @@ using var serviceProvider = builder.Services.BuildServiceProvider();
 var securityKeyService = serviceProvider.GetRequiredService<ISecurityKeyService<RsaSecurityKey>>();
 var fileSerializer = serviceProvider.GetRequiredService<IFileSerializer>();
 
-var InitializedBuilder = ChatBuilderInitializer.CreateInstance(builder, securityKeyService, fileSerializer);
+builder.InitWebApplicationSettings(securityKeyService, fileSerializer);
 
 builder.Services.AddRouting();
-
-InitializedBuilder.LoggingConfigurationService.AddService(builder);
-InitializedBuilder.ConfigurationAuthOptions.AddService(builder);
-InitializedBuilder.ConfigurationAuthorizationService.AddService(builder);
-InitializedBuilder.SwaggerConfigurationService.AddService(builder);
+builder.AddLoggingService();
+builder.AddChatAuthenticationService();
+builder.AddChatAuthorizationService();
+builder.AddChatSwaggerService();
 
 builder.Services.AddControllers();
 
-InitializedBuilder.CorsConfigurationService.AddService(builder);
+builder.AddCorsService();
 
 var app = builder.Build();
 
@@ -37,7 +40,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
-InitializedBuilder.ApiGatewayConfigurationService.UseService(app);
+app.UseAPIGatewayService();
 
 app.Use(async (context, next) =>
 {
@@ -55,7 +58,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
-InitializedBuilder.CorsConfigurationService.UseService(app);
+app.UseCorsService();
 
 app.Use(async (context, next) =>
 {
@@ -64,7 +67,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
-InitializedBuilder.SwaggerConfigurationService.UseService(app);
+app.UseChatSwaggerService();
 
 app.Use(async (context, next) =>
 {
@@ -91,7 +94,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
-InitializedBuilder.ConfigurationAuthOptions.UseService(app);
+app.UseChatAuthenticationService();
 
 app.Use(async (context, next) =>
 {
@@ -100,7 +103,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
-InitializedBuilder.ConfigurationAuthorizationService.UseService(app);
+app.UseChatAuthorizationService();
 
 app.Use(async (context, next) =>
 {

@@ -1,21 +1,18 @@
-﻿using CadoChat.Web.AspNetCore.WebConfigurations;
-using CadoChat.Web.Common.Services;
-using CadoChat.Web.Common.Settings;
+﻿using CadoChat.Web.Common.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CadoChat.AuthManager.WebConfigurations
+namespace CadoChat.APIGateway.Manager.WebConfigurations
 {
-    public static class AuthSwaggerConfiguration
+
+    /// <summary>
+    /// Конфигуратор Swagger
+    /// </summary>
+    public static class APIGatewaySwaggerConfiguration
     {
         private static GlobalSettingsLoader GlobalSettingsLoader
             => GlobalSettingsLoader.Instance ??
@@ -25,7 +22,7 @@ namespace CadoChat.AuthManager.WebConfigurations
         {
             get
             {
-                return GlobalSettingsLoader.GlobalSettings.Services.AuthService.Name;
+                return GlobalSettingsLoader.GlobalSettings.Services.ChatService.Name;
             }
         }
 
@@ -33,24 +30,30 @@ namespace CadoChat.AuthManager.WebConfigurations
         /// Добавить сервис Swagger
         /// </summary>
         /// <param name="webApplicationBuilder">Строитель приложения</param>
-        public static void AddAuthSwaggerService(this WebApplicationBuilder webApplicationBuilder)
+        public static void AddAPIGatewaySwaggerService(this WebApplicationBuilder webApplicationBuilder)
         {
             webApplicationBuilder.Services.AddSwaggerGen(ApplySettingsWithAuthorization);
         }
 
-
         /// <summary>
-        /// Использовать сервис Swagger
+        /// Инициализировать конфигуратор Swagger
         /// </summary>
         /// <param name="applicationBuilder">Собранное приложение</param>
-        public static void UseAuthSwaggerService(this WebApplication applicationBuilder)
+        public static void UseAPIGatewaySwaggerService(this WebApplication applicationBuilder)
         {
             if (applicationBuilder.Environment.IsDevelopment())
             {
                 applicationBuilder.UseSwagger();
-                applicationBuilder.UseSwaggerUI();
+                applicationBuilder.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", GlobalSettingsLoader.GlobalSettings.Services.API_Gateway.Name);
+                    c.SwaggerEndpoint("/auth/swagger/v1/swagger.json", GlobalSettingsLoader.GlobalSettings.Services.AuthService.Name);
+                    c.SwaggerEndpoint("/chat/swagger/v1/swagger.json", GlobalSettingsLoader.GlobalSettings.Services.ChatService.Name);
+                    c.RoutePrefix = "swagger";
+                });
             }
         }
+
 
         /// <summary>
         /// Применить настройки Swagger с авторизацией

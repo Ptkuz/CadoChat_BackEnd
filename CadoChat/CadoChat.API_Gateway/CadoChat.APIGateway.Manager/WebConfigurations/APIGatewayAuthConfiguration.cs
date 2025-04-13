@@ -1,52 +1,51 @@
-﻿using CadoChat.Security.Authentication.Services;
-using CadoChat.Security.Authentication.Services.Interfaces;
-using CadoChat.Security.Validation.Services.Interfaces;
+﻿using CadoChat.Web.Common.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
-namespace CadoChat.APIGateway.Manager.Services
+namespace CadoChat.APIGateway.Manager.WebConfigurations
 {
 
     /// <summary>
     /// Конфигуратор аутентификации
     /// </summary>
-    public class APIGatewayAuthConfiguration : AuthConfiguration, IAuthConfiguration
+    public static class APIGatewayAuthConfiguration
     {
-        /// <summary>
-        /// Инициализировать конфигуратор аутентификации
-        /// </summary>
-        /// <param name="securityKeyService">Строитель приложения</param>
-        public APIGatewayAuthConfiguration(ISecurityKeyService<RsaSecurityKey> securityKeyService)
-            : base(securityKeyService)
-        {
-        }
+
+        public static string AuthenticationScheme =>
+                JwtBearerDefaults.AuthenticationScheme;
 
         /// <summary>
         /// Добавить сервис аутентификации
         /// </summary>
         /// <param name="webApplicationBuilder"></param>
-        public override void AddService(WebApplicationBuilder webApplicationBuilder)
+        public static void AddAPIGatewayAuthenticationhService(this WebApplicationBuilder webApplicationBuilder)
         {
             webApplicationBuilder.Services
                 .AddAuthentication(AuthenticationScheme)
                 .AddJwtBearer(AuthenticationScheme, ConfigureAuthOptions);
         }
 
-        public override void UseService(WebApplication applicationBuilder)
+        /// <summary>
+        /// Использовать сервис аутентификации
+        /// </summary>
+        /// <param name="applicationBuilder">Собранное приложение</param>
+        public static void UseAPIGatewayAuthenticationhService(this WebApplication applicationBuilder)
         {
-            base.UseService(applicationBuilder);
+            applicationBuilder.UseAuthentication();
         }
 
         /// <summary>
         /// Настроить опции аутентификации
         /// </summary>
         /// <param name="options">Опции аутентификации</param>
-        protected override void ConfigureAuthOptions(JwtBearerOptions options)
+        private static void ConfigureAuthOptions(JwtBearerOptions options)
         {
 
-            var authService = GlobalSettings.Services.AuthService;
+            var globalInstance = GlobalSettingsLoader.Instance ?? throw new ArgumentNullException();
+
+            var authService = globalInstance.GlobalSettings.Services.AuthService;
 
             options.Authority = authService.URL;
             options.RequireHttpsMetadata = true;

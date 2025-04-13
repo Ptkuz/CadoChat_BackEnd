@@ -4,19 +4,26 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
-namespace CadoChat.AuthManager.WebConfigurations
+namespace CadoChat.ChatManager.WebConfigurations
 {
 
     /// <summary>
     /// Конфигуратор аутентификации
     /// </summary>
-    public static class AuthenticatioAuthConfiguration
+    public static class ChatAuthenticationConfiguration
     {
 
-        public static string AuthenticationScheme =>
-                JwtBearerDefaults.AuthenticationScheme;
+        private static GlobalSettingsLoader GlobalSettingsLoader =>
+            GlobalSettingsLoader.Instance ?? throw new ArgumentNullException();
 
-        public static void AddAuthenticationService(this WebApplicationBuilder webApplicationBuilder)
+        public static string AuthenticationScheme =>
+            JwtBearerDefaults.AuthenticationScheme;
+
+        /// <summary>
+        /// Добавить сервис аутентификации
+        /// </summary>
+        /// <param name="webApplicationBuilder">Строитель приложения</param>
+        public static void AddChatAuthenticationService(this WebApplicationBuilder webApplicationBuilder)
         {
             webApplicationBuilder.Services.AddAuthentication(AuthenticationScheme)
                 .AddJwtBearer(AuthenticationScheme, ConfigureAuthOptions);
@@ -26,7 +33,7 @@ namespace CadoChat.AuthManager.WebConfigurations
         /// Использовать сервис аутентификации
         /// </summary>
         /// <param name="applicationBuilder">Собранное приложение</param>
-        public static void UseAuthenticatioService(this WebApplication applicationBuilder)
+        public static void UseChatAuthenticationService(this WebApplication applicationBuilder)
         {
             applicationBuilder.UseAuthentication();
         }
@@ -37,10 +44,9 @@ namespace CadoChat.AuthManager.WebConfigurations
         /// <param name="options">Опции аутентификации</param>
         private static void ConfigureAuthOptions(JwtBearerOptions options)
         {
-            var globalInstance = GlobalSettingsLoader.Instance ?? throw new ArgumentNullException();
-
-            var authService = globalInstance.GlobalSettings.Services.AuthService;
-            var clientUser = globalInstance.GlobalSettings.Users.ClientUser;
+            var chatService = GlobalSettingsLoader.GlobalSettings.Services.ChatService;
+            var authService = GlobalSettingsLoader.GlobalSettings.Services.AuthService;
+            var clientUser = GlobalSettingsLoader.GlobalSettings.Users.ClientUser;
 
             options.Authority = authService.URL;
             options.RequireHttpsMetadata = true;
@@ -53,7 +59,7 @@ namespace CadoChat.AuthManager.WebConfigurations
                 //ValidateAudience = true,
                 //ValidateLifetime = true,
                 //IssuerSigningKey = _securityKeyService.Key,
-                //ValidAudiences = [authService.AudiencesAccess.Name],
+                //ValidAudiences = [chatService.AudiencesAccess.Name],
                 //ValidateIssuerSigningKey = true
             };
         }

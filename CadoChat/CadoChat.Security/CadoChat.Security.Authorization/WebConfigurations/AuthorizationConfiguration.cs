@@ -1,22 +1,20 @@
-﻿using CadoChat.Security.Authorization.Services.Interfaces;
-using CadoChat.Web.Common.Services;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CadoChat.Security.Authorization.Services
+namespace CadoChat.Security.Authorization.WebConfigurations
 {
 
     /// <summary>
     /// Конфигуратор авторизации
     /// </summary>
-    public class AuthorizationConfiguration : ConfigurationService, IAuthorizationConfiguration
+    public static class AuthorizationConfiguration
     {
 
         /// <summary>
         /// Добавить сервис авторизации
         /// </summary>
         /// <param name="webApplicationBuilder">Строитель приложения</param>
-        public virtual void AddService(WebApplicationBuilder webApplicationBuilder)
+        public static void AddAuthorizationService(this WebApplicationBuilder webApplicationBuilder)
         {
             webApplicationBuilder.Services.AddAuthorization();
         }
@@ -25,7 +23,7 @@ namespace CadoChat.Security.Authorization.Services
         /// Использовать сервис авторизации
         /// </summary>
         /// <param name="applicationBuilder">Собранное приложение</param>
-        public virtual void UseService(WebApplication applicationBuilder)
+        public static void UseAuthorizationService(this WebApplication applicationBuilder)
         {
             applicationBuilder.UseAuthorization();
         }
