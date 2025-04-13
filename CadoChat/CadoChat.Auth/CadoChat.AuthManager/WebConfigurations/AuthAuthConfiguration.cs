@@ -44,13 +44,13 @@ namespace CadoChat.AuthManager.WebConfigurations
             options.TokenValidationParameters = new TokenValidationParameters
             {
 
-                ValidateIssuer = true,
-                ValidIssuer = authService.URL,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                IssuerSigningKey = _securityKeyService.Key,
-                ValidAudiences = [authService.AudiencesAccess.Name],
-                ValidateIssuerSigningKey = true
+                //ValidateIssuer = true,
+                //ValidIssuer = authService.URL,
+                //ValidateAudience = true,
+                //ValidateLifetime = true,
+                //IssuerSigningKey = _securityKeyService.Key,
+                //ValidAudiences = [authService.AudiencesAccess.Name],
+                //ValidateIssuerSigningKey = true
             };
         }
     }

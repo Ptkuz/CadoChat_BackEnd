@@ -54,12 +54,12 @@ namespace CadoChat.APIGateway.Manager.Services
             options.TokenValidationParameters = new TokenValidationParameters
             {
 
-                ValidateIssuer = true,
-                ValidIssuer = authService.URL,
+                //ValidateIssuer = true,
+                //ValidIssuer = authService.URL,
                 //ValidateAudience = false,
                 //ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                RequireSignedTokens = true
+                //ValidateIssuerSigningKey = true,
+                //RequireSignedTokens = true
             };
 
         }

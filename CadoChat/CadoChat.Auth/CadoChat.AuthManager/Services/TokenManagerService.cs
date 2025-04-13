@@ -5,6 +5,7 @@ using CadoChat.Web.Common.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 
 namespace CadoChat.AuthManager.Services
 {
@@ -18,37 +19,55 @@ namespace CadoChat.AuthManager.Services
             _securityKeyService = securityKeyService;
         }
 
-        public string CreateAccessTokenAsync(TUser user)
+        public string GenerateToken(string userId, string username, List<string> roles, Dictionary<string, string> customClaims, List<string> scopes)
         {
+
+            roles.Add("Client");
+            customClaims.Add("create_chat", "true");
+            scopes.Add("chat:read");    
 
             var globalSettings = GlobalSettingsLoader.Instance;
 
             var authService = globalSettings.GlobalSettings.Services.AuthService;
             var chatService = globalSettings.GlobalSettings.Services.ChatService;
-
             var clientUser = globalSettings.GlobalSettings.Users.ClientUser;
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var tokenDescriptor = new SecurityTokenDescriptor
+            var claims = new List<Claim>
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, userId),
+            new Claim(JwtRegisteredClaimNames.UniqueName, username),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        };
+
+            // Добавим роли
+            foreach (var role in roles)
             {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
-                Issuer = authService.URL,
-                Audience = chatService.AudiencesAccess.Name,
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim("scope", chatService.ChatScopeConfig.SendMessageScope.Name),
-                    new Claim("scope", chatService.ChatScopeConfig.ReceiveMessageScope.Name)
-                }),
-                Expires = DateTime.UtcNow.AddMinutes(clientUser.AccessTokenLifetime),
-                SigningCredentials = _securityKeyService.SigningCredentials
-            };
+            // Добавим скоупы
+            foreach (var scope in scopes)
+            {
+                claims.Add(new Claim("scope", scope));
+            }
 
-            //tokenDescriptor.Subject.AddClaim(new Claim("aud", chatService.AudiencesAccess.Name));
+            // Кастомные клеймы
+            foreach (var kvp in customClaims)
+            {
+                claims.Add(new Claim(kvp.Key, kvp.Value));
+            }
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var jwt = tokenHandler.WriteToken(token);
+            var creds = _securityKeyService.SigningCredentials;
 
-            return jwt;
+            var token = new JwtSecurityToken(
+                issuer: authService.URL,
+                audience: chatService.Name,
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(clientUser.AccessTokenLifetime),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

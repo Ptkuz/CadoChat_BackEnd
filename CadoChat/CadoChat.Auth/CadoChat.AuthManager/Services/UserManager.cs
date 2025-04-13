@@ -50,7 +50,7 @@ namespace CadoChat.AuthManager.Services
                 return new LoginUserResult(false , message);
             }
 
-            var token = _tokenManagerService.CreateAccessTokenAsync(existingUser);
+            var token = _tokenManagerService.GenerateToken(existingUser.Id.ToString(), existingUser.UserName, new List<string>(), new Dictionary<string, string>(), new List<string>());
 
             if (token == null)
             {
