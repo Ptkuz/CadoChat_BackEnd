@@ -1,3 +1,4 @@
+using CadoChat.Auth.EF.Context;
 using CadoChat.Auth.EF.Entities;
 using CadoChat.Auth.IdentityServer.Middlewaers;
 using CadoChat.AuthManager.Services;
@@ -14,6 +15,7 @@ using CadoChat.Security.Cors.Services.Interfaces;
 using CadoChat.Security.Validation.Services;
 using CadoChat.Security.Validation.Services.Interfaces;
 using CadoChat.Web.AspNetCore.WebConfigurations.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -58,18 +60,84 @@ services.AddAuthMediatR();
 
 var app = builder.Build();
 
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
+
 InitializedBuilder.ApiGatewayConfigurationService.UseService(app);
+
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
 
 app.UseMiddleware<IdentityServerURLMiddleware>();
 
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
+
 InitializedBuilder.CorsConfigurationService.UseService(app);
+
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
 
 InitializedBuilder.SwaggerConfigurationService.UseService(app);
 
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
+
 app.UseRouting();
+
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
 InitializedBuilder.ConfigurationIdentityService.UseService(app);
+
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
+
 InitializedBuilder.ConfigurationAuthOptions.UseService(app);
+
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
+
 InitializedBuilder.AuthorizationConfiguration.UseService(app);
+
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
+
 app.MapControllers();
 
 app.Run();

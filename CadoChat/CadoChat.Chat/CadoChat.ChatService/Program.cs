@@ -30,19 +30,84 @@ InitializedBuilder.CorsConfigurationService.AddService(builder);
 
 var app = builder.Build();
 
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
+
 InitializedBuilder.ApiGatewayConfigurationService.UseService(app);
+
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
 
 app.UseMiddleware<AccessAPIGatewayMiddleware>();
 
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
+
 InitializedBuilder.CorsConfigurationService.UseService(app);
+
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
+
 InitializedBuilder.SwaggerConfigurationService.UseService(app);
+
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
 
 app.UseRouting();
 
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
+
 app.UseMiddleware<AuthenticationErrorMiddleware>();
 
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
+
 InitializedBuilder.ConfigurationAuthOptions.UseService(app);
+
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
+
 InitializedBuilder.ConfigurationAuthorizationService.UseService(app);
+
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
 
 app.MapControllers();
 

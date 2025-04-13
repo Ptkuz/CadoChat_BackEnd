@@ -86,9 +86,39 @@ app.Use(async (context, next) =>
 
 app.UseHttpsRedirection();
 
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
+
 app.UseRouting();
+
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
+
 InitializedBuilder.ConfigurationAuthOptions.UseService(app);
+
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
+
 app.UseAuthorization();
+
+app.Use(async (context, next) =>
+{
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogInformation("Запрос на путь: {Path}", context.Request.Path);
+    await next();
+});
 
 await app.UseOcelot();
 

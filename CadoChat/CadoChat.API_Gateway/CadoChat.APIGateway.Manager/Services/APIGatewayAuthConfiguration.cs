@@ -34,6 +34,11 @@ namespace CadoChat.APIGateway.Manager.Services
                 .AddJwtBearer(AuthenticationScheme, ConfigureAuthOptions);
         }
 
+        public override void UseService(WebApplication applicationBuilder)
+        {
+            base.UseService(applicationBuilder);
+        }
+
         /// <summary>
         /// Настроить опции аутентификации
         /// </summary>
@@ -51,8 +56,8 @@ namespace CadoChat.APIGateway.Manager.Services
 
                 ValidateIssuer = true,
                 ValidIssuer = authService.URL,
-                ValidateAudience = false,
-                ValidateLifetime = true,
+                //ValidateAudience = false,
+                //ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
                 RequireSignedTokens = true
             };
